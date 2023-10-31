@@ -865,7 +865,9 @@ class OvertimeController extends Controller
      // Approve HR 
      public function approve_HR(Request $request) {
 
-		$attendance = Attendance::find($request->id);
+		$attendance = Overtime::find($request->id);
+
+        // dd($attendance);
 		return response()->json($attendance);
 	}
 
@@ -873,7 +875,7 @@ class OvertimeController extends Controller
 
 
        $approve_HR = Overtime::find($request->hr_id);
-       $approve_HR -> isApproved_HR = '1';
+       $approve_HR -> isApproved_HR = 1;
        $approve_HR -> update();
 
             return response()->json([
@@ -887,7 +889,9 @@ class OvertimeController extends Controller
     // Approve SVP
     public function approve_SVP(Request $request) {
 
-		$attendance = Attendance::find($request->id);
+		//$attendance = Attendance::find($request->id);
+
+        $attendance = Overtime::find($request->id);
 		return response()->json($attendance);
 	}
 

@@ -2216,7 +2216,8 @@ class AttendanceController extends Controller
 
 
                                                 }
-                                                else{
+                                                else
+                                                {
 
                                                     //HOURS NOW IS GREATER THAN EQUAL TO EMPLOYEE BREAKTIME  START AND LESS THAN OR EQUAL TO   EMPLOYEE BREAKTIME  END
                                                     if(Carbon::now('GMT+8')->format('H:i:s') >= Carbon::parse($data->employee->breaktime_start)->format('H:i:s') && Carbon::now('GMT+8')->format('H:i:s') <= Carbon::parse($data->employee->breaktime_end)->format('H:i:s') ){
