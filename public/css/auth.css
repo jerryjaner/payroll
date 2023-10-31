@@ -1,0 +1,309 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    /* Notifications */
+    --readTextColor: #9A9898;
+
+    /* Sidebar */
+    --body-color: #fff;
+    --sidebar-color: #1e1e1e;
+    --primary-color: #3a3b3c;
+    --primary-color-light: #303030;
+    --toggle-color: #fff;
+    --text-color: #282828;
+
+    --secondaryAccentColor: #bc3d4f;
+
+    /* ====== Transition ====== */
+    --tran-03: all 0.2s ease;
+    --tran-03: all 0.3s ease;
+    --tran-04: all 0.3s ease;
+    --tran-05: all 0.3s ease;
+
+    /* Fonts sizes */
+    --Bold: 700;
+    --semiBold: 500;
+    --Text: 400; 
+     
+}
+
+body{
+    min-height: 100vh;
+    background-color: var(--body-color);
+    transition: var(--tran-05);
+}
+
+::selection{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+main {
+    padding-bottom: 50px;
+}
+
+.copyright {
+    font-size: 12px;
+
+    padding: 0.5rem 3rem;
+
+    margin-bottom: 0px;
+
+    position: fixed;
+
+    bottom: 0%;
+    right: 0%;
+
+    width: 100%;
+
+    text-align: end;
+
+    background-color: var(--sidebar-color);
+    color: var(--body-color);
+}
+
+.card {
+    /* padding: 4%; */
+
+    border-radius: 30px;
+
+    width: 80%;
+
+    -webkit-box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    -moz-box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.card-body {
+    padding: 0rem;
+}
+
+.card-wpr {
+    height: 90vh;
+}
+
+.page-heading {
+    font-weight: var(--Bold);
+    font-size: 2.8rem;
+    
+    line-height: 2.8rem;
+
+    color: var(--body-color);
+    
+    margin-top: 3rem;
+}
+
+.form-check-label {
+    margin-left: 0.7rem;
+    margin-top: 10px;
+}
+
+.form-heading {
+    font-weight: var(--Bold);
+    font-size: 23px;
+}
+
+.headingLogin-icon {
+    font-size: 1.5rem;
+    margin-right: 0.3rem;
+    margin-top: -5px;
+}
+
+.headingRequest-icon {
+    font-size: 2rem;
+    margin-right: 0.3rem;
+    margin-top: -5px;
+}
+
+.back-icon {
+    font-size: 2rem;
+    margin-right: 2rem;
+    margin-top: -5px;
+}
+
+.auth-links{
+    font-size: 0.7rem;
+    font-weight: var(--Bold);
+    color: var(--text-color);
+
+    text-decoration: none;
+
+    margin-left: 8px;
+}
+
+.dash-icon {
+    font-size: 2.5rem;
+
+    margin-top: -5px;
+    margin-right: 0.5rem;
+
+    color: var(--text-color);
+}
+
+.enrollments-icon {
+    font-size: 1.5rem;
+
+    margin-top: -5px;
+    margin-right: 0.5rem;
+
+    color: var(--text-color);
+}
+
+.back-icon {
+    font-size: 2.5rem;
+
+    margin-top: -5px;
+    margin-right: 0.5rem;
+}
+
+.back-link {
+    color: var(--text-color);
+}
+
+.auth-links:hover,
+.back-link:hover,
+.doc-links:hover {
+    color: var(--secondaryAccentColor);
+}
+
+.form-note {
+    font-size: 0.7rem;
+    margin-top: 5px;
+}
+
+.note-icon {
+    /* margin-top: 3px; */
+    margin-right: 8px;
+
+    font-size: 1rem;
+}
+
+.form-row {
+    padding: 0.3rem 0rem;
+}
+
+.txt-verify {
+    font-size: 12px;
+    margin-top: 5px;
+
+    color: var(--text-color);
+}
+
+.login-row {
+    margin-bottom: 2.5rem;
+}
+
+.note-row {
+    margin-top: 2.5rem;
+}
+
+.form-control {
+    border-radius: 10px;
+    /* border: solid 2px var(--primary-color-light); */
+
+    background-color: var(--body-color);
+    color: var(--text-color);
+
+    padding: 0.5rem 1.5rem;
+
+    font-size: 0.7rem;
+
+    font-weight: var(--semiBold);
+
+    transition: all 0.2s ease;
+}
+
+.form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--text-color);
+}
+
+.form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: var(--text-color);
+}
+
+.form-control::-ms-input-placeholder { /* Microsoft Edge */
+    color: var(--text-color);
+}
+
+.form-check-input {
+    margin-top: 12px;
+}
+
+.form-check-input:focus {
+    box-shadow: none;
+}
+
+.form-check-label {
+    margin-left: 0.7rem;
+    font-size: 0.7rem;
+}
+
+.right-pane {
+    padding: 8%;
+}
+
+.left-pane {
+    background: rgb(238,62,62);
+    background: linear-gradient(230deg, rgba(238,62,62,1) 0%, rgba(39,56,131,1) 100%);
+
+    border-radius: 30px 0px 0px 30px;
+
+    padding: 5%;
+}
+
+.th-logo {
+    width: 60%;
+
+    margin-top: -5px;
+}
+
+.btn-form {
+    background-color: var(--secondaryAccentColor);
+    color: var(--body-color);
+
+    border-radius: 30px;
+
+    transition: all ease-in-out 0.3s;
+}
+
+.btn-form:hover{
+    color: var(--body-color);
+}
+
+.btn-icon {
+    margin-right: 8px;
+}
+
+.bx-category-alt{
+    font-size: 2.5rem;
+    
+    padding: .7rem;
+
+    background-color: var(--body-color);
+
+    border-radius: 100%;
+
+    color: var(--secondaryAccentColor);
+}
+
+.features {
+    color: var(--body-color);
+    font-size: .7rem;
+
+    margin-right: 1.5rem;
+}
+
+.features i {
+    margin-right: 8px;
+}
+
+.feature-list {
+    margin-top: 2.5rem;
+}
+
+/* End of Authentication Styles */
