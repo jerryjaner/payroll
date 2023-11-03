@@ -58,13 +58,6 @@ class AttendanceController extends Controller
                                         ->with('employee')
                                         ->get(['id','time_in','time_out','emp_no','date','created_at','updated_at']);
 
-
-
-
-        // $Employee_time_in_AM = "08:00:00";
-        // $Employee_time_out_PM = "17:00:00";
-        // $Employee_time_out = "16:59:00";
-
 		$output = '';
 		if ($attendance_todays ->count() > 0) {
 
@@ -3154,257 +3147,180 @@ class AttendanceController extends Controller
                                    
 
                                 }
-                                
                                 else
                                 {
                                    
+                                    $Check_Attendance = Attendance::where('emp_no', $request -> scanned)
+                                                ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                ->first();
 
-                                        // dd(1);
-                                        
-                                    //IF THE EMPLOYEE COMPLETE TIME IN AND OUT 
-                                    //ATTENDANCE AGAIN IN THE SAME DAY WHICH IS FOR NIGHT SHIFT ONLY
-                                    if($data -> emp_no == $request -> scanned && $data -> date == Carbon::now('GMT+8')->subDay(1)->format('Y-m-d') && $data -> time_out != null){
+                                       
+                            
+                                    if (!$Check_Attendance) {
 
-                                        
-                                        foreach($schedules as $sched){
+                                        //dd('attendance again');
+                                        //IF THE EMPLOYEE COMPLETE TIME IN AND OUT 
+                                        //ATTENDANCE AGAIN IN THE SAME DAY WHICH IS FOR NIGHT SHIFT ONLY
+                                        if($data -> emp_no == $request -> scanned && $data -> date == Carbon::now('GMT+8')->subDay(1)->format('Y-m-d') && $data -> time_out != null){
 
-                                            foreach ($holidays as $holiday) {
-                                                
-                                                $currentDate = Carbon::today('GMT+8')->format('m-d');
-                                                $holidayDate = Carbon::parse($holiday->holiday_date)->format('m-d');
+                                            
+                                            foreach($schedules as $sched){
 
-                                                if ($currentDate === $holidayDate && $holiday->holiday_type === 'Regular') {
+                                                foreach ($holidays as $holiday) {
+                                                    
+                                                    $currentDate = Carbon::today('GMT+8')->format('m-d');
+                                                    $holidayDate = Carbon::parse($holiday->holiday_date)->format('m-d');
 
-
-                                                    //if rest day nila then  regular holiday pa then night shift
-                                                    //RDRH
-                                                    if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
-
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-                                                            $emp_sched = Carbon::parse($sched -> sched_start);
-                                                            $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+                                                    if ($currentDate === $holidayDate && $holiday->holiday_type === 'Regular') {
 
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = $sched -> sched_start;
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                            $employee_attendance -> RDRHND = true;
-                                                            $employee_attendance -> save();
+                                                        //if rest day nila then  regular holiday pa then night shift
+                                                        //RDRH
+                                                        if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
-                                                            return response()->json([
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> RDRHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> RDRHND = true;
-
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-
-                                                    }
-                                                    else
-                                                    {
-
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-
-                                                            
                                                                 $emp_sched = Carbon::parse($sched -> sched_start);
                                                                 $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-                                                                
+
 
                                                                 $employee_attendance = new Attendance();
                                                                 $employee_attendance -> emp_no = $request -> scanned;
                                                                 $employee_attendance -> time_in = $sched -> sched_start;
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                                $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> RDRHND = true;
                                                                 $employee_attendance -> save();
-
-                                                                dd($employee_attendance);
-
 
                                                                 return response()->json([
 
                                                                     'status' => 200,
                                                                     'msg' => 'Attendance Recorded Successfully',
                                                                 ]);
+
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> RDRHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> RDRHND = true;
+
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+
                                                         }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+                                                        else
+                                                        {
+
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
 
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
+                                                                
+                                                                    $emp_sched = Carbon::parse($sched -> sched_start);
+                                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+                                                                    
+
+                                                                    $employee_attendance = new Attendance();
+                                                                    $employee_attendance -> emp_no = $request -> scanned;
+                                                                    $employee_attendance -> time_in = $sched -> sched_start;
+                                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                                    $employee_attendance -> RHND = true;
+                                                                    $employee_attendance -> save();
+
+                                                                    dd($employee_attendance);
 
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> RHND = true;
-                                                            $employee_attendance -> save();
+                                                                    return response()->json([
 
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                                                    ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
+
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+
                                                         }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> RHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
 
                                                     }
 
+                                                    #Rest Day then Special holiday
+                                                    else if ($currentDate === $holidayDate && $holiday->holiday_type === 'Special') {
 
-                                                }
+                                                        # dd("regular special niyan");
 
-                                                #Rest Day then Special holiday
-                                                else if ($currentDate === $holidayDate && $holiday->holiday_type === 'Special') {
+                                                            if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
-                                                    # dd("regular special niyan");
-
-                                                        if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
-
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-
-                                                            // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            // $emp_sched = Carbon::parse($sched -> sched_start);
-                                                            // $interval = $emp_sched->diffInSeconds($datetimetoday);
-                                                            // $total = gmdate('H:i:s', $interval); //minus
-
-                                                            // $time2 = Carbon::parse($total);
-                                                            // $datetimenow = Carbon::now('GMT+8')->format('Y-m-d H:i:s'); //carbon now
-                                                            // $convert = Carbon::parse($datetimenow);
-
-                                                            // //add the subtrcated hour or minus to the current time and date
-                                                            // $sum = $convert->add($time2->diffInHours('00:00:00'), 'hours')
-                                                            //                 ->add($time2->diffInMinutes('00:00:00') % 60, 'minutes')
-                                                            //                 ->add($time2->diffInSeconds('00:00:00') % 60, 'seconds');
-
-                                                            // $sum->format('Y-m-d H:i:s');
-                                                            $emp_sched = Carbon::parse($sched -> sched_start);
-                                                            $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = $sched -> sched_start;
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                            $employee_attendance -> RDSHND = true;
-                                                            $employee_attendance -> save();
-
-
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> RDSHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> RDSHND = true;
-
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-
-                                                    }
-                                                    else
-                                                    {
-
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
 
                                                                 // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
@@ -3425,11 +3341,131 @@ class AttendanceController extends Controller
                                                                 $emp_sched = Carbon::parse($sched -> sched_start);
                                                                 $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
 
+
                                                                 $employee_attendance = new Attendance();
                                                                 $employee_attendance -> emp_no = $request -> scanned;
                                                                 $employee_attendance -> time_in = $sched -> sched_start;
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                                $employee_attendance -> RDSHND = true;
+                                                                $employee_attendance -> save();
+
+
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> RDSHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> RDSHND = true;
+
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
+
+
+                                                                    // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                    // $emp_sched = Carbon::parse($sched -> sched_start);
+                                                                    // $interval = $emp_sched->diffInSeconds($datetimetoday);
+                                                                    // $total = gmdate('H:i:s', $interval); //minus
+
+                                                                    // $time2 = Carbon::parse($total);
+                                                                    // $datetimenow = Carbon::now('GMT+8')->format('Y-m-d H:i:s'); //carbon now
+                                                                    // $convert = Carbon::parse($datetimenow);
+
+                                                                    // //add the subtrcated hour or minus to the current time and date
+                                                                    // $sum = $convert->add($time2->diffInHours('00:00:00'), 'hours')
+                                                                    //                 ->add($time2->diffInMinutes('00:00:00') % 60, 'minutes')
+                                                                    //                 ->add($time2->diffInSeconds('00:00:00') % 60, 'seconds');
+
+                                                                    // $sum->format('Y-m-d H:i:s');
+                                                                    $emp_sched = Carbon::parse($sched -> sched_start);
+                                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+
+                                                                    $employee_attendance = new Attendance();
+                                                                    $employee_attendance -> emp_no = $request -> scanned;
+                                                                    $employee_attendance -> time_in = $sched -> sched_start;
+                                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                                    $employee_attendance -> SHND = true;
+                                                                    $employee_attendance -> save();
+
+                                                                    return response()->json([
+
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                                                    ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> SHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> SHND = true;
                                                                 $employee_attendance -> save();
 
@@ -3438,205 +3474,202 @@ class AttendanceController extends Controller
                                                                     'status' => 200,
                                                                     'msg' => 'Attendance Recorded Successfully',
                                                                 ]);
+                                                            }
+
                                                         }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> SHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> SHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-
                                                     }
+
                                                 }
 
-                                            }
 
+                                                #REST DAY
+                                                if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
-                                            #REST DAY
-                                            if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
+                                                    if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
-                                                if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-
-                                                
-                                                    $emp_sched = Carbon::parse($sched -> sched_start);
-                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = $sched -> sched_start;
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                    $employee_attendance -> RDND = true;
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                    $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $sched_in = Carbon::parse($sched -> sched_start);
-                                                    $interval = $sched_in->diffInSeconds($timein);
-                                                    $total_late = gmdate('H:i:s', $interval);
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                    $employee_attendance -> late_hours = $total_late;
-                                                        $employee_attendance -> RDND = true;
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                    $employee_attendance -> RDND = true;
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-
-                                            }
-                                            else
-                                            {
-
-                                                
-                                                if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
                                                     
-
-                                                    $emp_sched = Carbon::parse($sched -> sched_start);
-                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = $sched -> sched_start;
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-
-                                                    // if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
-
-                                                    //    $employee_attendance -> RDND = true;
-                                                    // }
-
-                                                    $employee_attendance -> save();
+                                                        $emp_sched = Carbon::parse($sched -> sched_start);
+                                                        $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
 
 
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = $sched -> sched_start;
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                        $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> save();
 
-                                                    return response()->json([
+                                                        return response()->json([
 
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                        $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $sched_in = Carbon::parse($sched -> sched_start);
+                                                        $interval = $sched_in->diffInSeconds($timein);
+                                                        $total_late = gmdate('H:i:s', $interval);
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                        $employee_attendance -> late_hours = $total_late;
+                                                            $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                        $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+
                                                 }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+                                                else
+                                                {
+
+                                                    
+                                                    if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
+
+                                                        
+
+                                                        $emp_sched = Carbon::parse($sched -> sched_start);
+                                                        $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = $sched -> sched_start;
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+
+                                                        // if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
+
+                                                        //    $employee_attendance -> RDND = true;
+                                                        // }
+
+                                                        $employee_attendance -> save();
 
 
-                                                    $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $sched_in = Carbon::parse($sched -> sched_start);
-                                                    $interval = $sched_in->diffInSeconds($timein);
-                                                    $total_late = gmdate('H:i:s', $interval);
 
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                    $employee_attendance -> late_hours = $total_late;
+                                                        return response()->json([
 
-                                                    // if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
 
-                                                    //    $employee_attendance -> RDND = true;
-                                                    // }
 
-                                                    $employee_attendance -> save();
+                                                        $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $sched_in = Carbon::parse($sched -> sched_start);
+                                                        $interval = $sched_in->diffInSeconds($timein);
+                                                        $total_late = gmdate('H:i:s', $interval);
 
-                                                    return response()->json([
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                        $employee_attendance -> late_hours = $total_late;
 
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                        // if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
-                                                    $employee_attendance -> save();
+                                                        //    $employee_attendance -> RDND = true;
+                                                        // }
 
-                                                    return response()->json([
+                                                        $employee_attendance -> save();
 
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
+                                                        return response()->json([
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
 
-                                            }      
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+
+                                                }      
+                                                
+                                            }
+
+                                        }
+
+
+                                    }
+                                    else{
+
+                                        if (Carbon::now('GMT+8')->format('H:i:s') <= $data->employee->sched_start) {
+
+                                             // IF THE EMPLOYEE TIME OUT / UNDERTIME WITH THE SAME DATE
+                                            
+                                             $sched_start =  Carbon::parse($data->employee->sched_start);
+                                             $sched_end = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
+                                             $sum = $sched_start->diffInSeconds($sched_end);
+                                             $undertime = gmdate('H:i:s', $sum);
+ 
+                                                
+                                            // dd("Undertime detected for the specified date.");
+                                            Attendance::where('emp_no', '=', $request->scanned)
+                                                      ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                      ->update([
+                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                            'night_diff_hours' => '00:00:00',
+                                                            'undertime_hours' => $undertime,
+                                                            'work_hours' => '00:00:00',
+                                                        ]);
+
+                                            return response()->json([
+                                                'status' => 200,
+                                                'msg' => 'Attendance updated Successfully',
+                                            ]);
                                             
                                         }
 
                                     }
+
+                                    
                                     
                                      
                                 }
                
                         }
 
-                     // dd('MAIN INSERT');
+                        // dd('MAIN INSERT');
 
                         //FOR THE INSERT OF THE ATTENDANCE OF EMPLOYEE
                         foreach($schedules as $sched){
