@@ -3158,7 +3158,7 @@ class AttendanceController extends Controller
                             
                                     if (!$Check_Attendance) {
 
-                                        //dd('attendance again');
+                                       
                                         //IF THE EMPLOYEE COMPLETE TIME IN AND OUT 
                                         //ATTENDANCE AGAIN IN THE SAME DAY WHICH IS FOR NIGHT SHIFT ONLY
                                         if($data -> emp_no == $request -> scanned && $data -> date == Carbon::now('GMT+8')->subDay(1)->format('Y-m-d') && $data -> time_out != null){
