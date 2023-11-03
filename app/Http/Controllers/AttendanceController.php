@@ -1111,7 +1111,7 @@ class AttendanceController extends Controller
                                                                         'msg' => 'Attendance updated Successfully',
                                                                     ]);
                                                         }
-                                                        else if ($attends->time_in   >   $breakTime_end    &&   $attends->time_out    >=    $breakTime_end)///nag in ng lagapas na sa breaktime gasfgfdgaf
+                                                        else if ($attends->time_in   >   $breakTime_end    &&   $attends->time_out    >=    $breakTime_end)///nag in ng lagapas na sa breaktime stu
                                                         {
                                                             $sched_Out = Carbon::parse($attends ->employee-> sched_end);
                                                             $UTDiff = $sched_Out->diffInSeconds($attends ->time_out);
