@@ -3155,7 +3155,7 @@ class AttendanceController extends Controller
                                                 ->first();
 
                                        
-                            
+                                    //CHECK IF THE EMPLOYEE HAS ATTENDANCE IN TODAYS DATE
                                     if (!$Check_Attendance) {
 
                                        
@@ -3633,32 +3633,55 @@ class AttendanceController extends Controller
                                     }
                                     else{
 
-                                        if (Carbon::now('GMT+8')->format('H:i:s') <= $data->employee->sched_start) {
+                                            $timeout_again = Attendance::where('emp_no', $request -> scanned)
+                                                                        ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->where('time_in', '!=', Null)
+                                                                        ->where('time_out', '!=', Null)
+                                                                        ->first();
 
-                                             // IF THE EMPLOYEE TIME OUT / UNDERTIME WITH THE SAME DATE
-                                            
-                                             $sched_start =  Carbon::parse($data->employee->sched_start);
-                                             $sched_end = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
-                                             $sum = $sched_start->diffInSeconds($sched_end);
-                                             $undertime = gmdate('H:i:s', $sum);
- 
+                                                                   
+                                            if($timeout_again){
+
+                                                //CHECK IF THE TIME IN AND OUT ARE COMPLETED FOR TODAYS DATE        
+
+                                                return response()->json([
+                                                    'status' => 0,
+                                                    'msg' => 'Already Clocked Out',
+                                                ]);
+                                            }
+                                            else{
+
+                                                 //RECORD TIME OUT OF THE EMPLOYEE IN TODAYS DATE
+
+                                                if (Carbon::now('GMT+8')->format('H:i:s') <= $data->employee->sched_start) {
+
+                                                    // IF THE EMPLOYEE TIME OUT / UNDERTIME WITH THE SAME DATE
+                                                    
+                                                    $sched_start =  Carbon::parse($data->employee->sched_start);
+                                                    $sched_end = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
+                                                    $sum = $sched_start->diffInSeconds($sched_end);
+                                                    $undertime = gmdate('H:i:s', $sum);
+        
+                                                        
+                                                    // dd("Undertime detected for the specified date.");
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                            ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                            ->update([
+                                                                    'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                    'night_diff_hours' => '00:00:00',
+                                                                    'undertime_hours' => $undertime,
+                                                                    'work_hours' => '00:00:00',
+                                                                ]);
+
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance Updated Successfully',
+                                                    ]);
+                                                    
+                                                }
+
                                                 
-                                            // dd("Undertime detected for the specified date.");
-                                            Attendance::where('emp_no', '=', $request->scanned)
-                                                      ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
-                                                      ->update([
-                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
-                                                            'night_diff_hours' => '00:00:00',
-                                                            'undertime_hours' => $undertime,
-                                                            'work_hours' => '00:00:00',
-                                                        ]);
-
-                                            return response()->json([
-                                                'status' => 200,
-                                                'msg' => 'Attendance updated Successfully',
-                                            ]);
-                                            
-                                        }
+                                            }
 
                                     }
 

@@ -11,8 +11,11 @@ class Payroll extends Model
     protected $table ='payrolls';
     protected $fillable = [
         
+        'memos',
         'employee_name',
         'employee_number',
+        'add_adjustment',
+        'deduct_adjustment',
         'daily_rate',
         'start_date',
         'end_date',

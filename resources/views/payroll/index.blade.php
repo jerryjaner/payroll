@@ -12,6 +12,14 @@
     .dataTables_filter{
       display:none;
     }
+
+    @media print{
+        #table{
+
+            width:725px;
+        }
+    }
+    
   </style>
 <div class="page-row row">
     <div class="col-xl-6">
@@ -87,16 +95,23 @@
                                             <span class="text-danger error-text employee_name_error"></span>
                                         </div>
                                     </div>
+                                    <div class="form-row row">
+                                        <div class="col-xl-12" >
+                                            <label for="txt-time">Memo:</label>
+                                            {{-- <input type="text" name="memos" class="form-control"> --}}
+                                            <textarea class="form-control" name="memos"  cols="10" rows="10"></textarea>
+                                        </div>
+                                    </div>
                                      <div class="form-row row">
                                         <div class="col-xl-6">
-                                            <label for="txt-time">Adjustment Addition:</label>
-                                            <input type="text" name="" class="form-control">
-                                            <span class="text-danger error-text "></span>
+                                            <label for="txt-time">Add Adjustment:</label>
+                                            <input type="number" min="0" step="any" name="add_adjustment" class="form-control">
+                                            <span class="text-danger error-text add_adjustment_error"></span>
                                         </div>
                                         <div class="col-xl-6">
-                                            <label for="txt-time">Adjustment Deduction:</label>
-                                            <input type="text"  name="" class="form-control">
-                                            <span class="text-danger error-text "></span>
+                                            <label for="txt-time">Deduct Adjustment:</label>
+                                            <input type="number" min="0" step="any" name="deduct_adjustment" class="form-control">
+                                            <span class="text-danger error-text deduct_adjustment_error"></span>
                                         </div>
                                     </div>
                                     <div class="form-row row">
@@ -511,11 +526,11 @@
                         </div>
                     </div>
                     <div class="row-xl-auto time mt-3">
-                        <small><span>Memos:  </span><span id="" ></span></small>
+                        <small><span>Memos:  </span><span class="" id="memos" style="font-weight:normal;"></span></small>
                     </div>
                     <div class="container">
 
-                        <div class="row justify-content-between first-row" style="word-wrap: break-word;">
+                        <div class="row justify-content-between first-row" style="word-wrap: break-word;" id="table">
 
                                 <div class="col-6 border border-dark time text-center bg-info  mx-auto">Current Salary Details</div>
                                 <div class="col-6 border border-dark time text-center bg-info mx-auto">Year to Date</div>
@@ -548,7 +563,7 @@
                                                 <small>Allowance:<span id="allowance" class="text1" style="margin-left: 10px;"></span></small>
                                             </div>
                                             <div class="row-sm-auto">
-                                                <small>Adjustment:<span id="name" class="text1" style="margin-left: 10px;"></span></small>
+                                                <small>Adjustment:<span id="add_adjustment" class="text1" style="margin-left: 10px;"></span></small>
                                             </div>
                                         </div>
                                     </div>
@@ -583,7 +598,7 @@
                                                 <small>Cash Advance:<span id="employee_cash_advance" class="text1" style="margin-left: 10px;"></span></small>
                                             </div>
                                             <div class="row-sm-auto">
-                                                <small>Adjustment:<span id="department"  class="text1" style="margin-left: 10px;"></span></small>
+                                                <small>Adjustment:<span id="deduct_adjustment"  class="text1" style="margin-left: 10px;"></span></small>
                                             </div>
                                         </div>
                                     </div>
@@ -1557,6 +1572,7 @@
                         // var result = (response.daily_rate) / 8;
                         // var per_min = (result / 60);
                         // var per_sec = (per_min / 60);
+
                         
                         $('#employee_name').val(response.employee_name);
                         $('#employee_number').val(response.employee_no);
@@ -1629,6 +1645,7 @@
                   
                   
                     $("#payslip_id").val(response.id);
+                    $("#memos").html( `${response.memos}`);
                     $("#from").html( `${from}`);
                     $("#to").html( `${to}`);
                     $("#payment_type").html( `${response.payment_type}`);
@@ -1638,6 +1655,8 @@
                     $("#department").html( `${response.employee.employee_department}`);
                     $("#position").html( `${response.employee.employee_position}`);
                     $("#paydate").html( `${paydate}`);
+                    $("#add_adjustment").html( `${response.add_adjustment}`);
+                    $("#deduct_adjustment").html( `${response.deduct_adjustment}`);
                     // $("#work_hours").html( `${response.total_workhour}`);
                     $("#total_overtime").html( `${overtime_total}`);
                     $("#late_undertime").html( `${response.late_undertime}`);
