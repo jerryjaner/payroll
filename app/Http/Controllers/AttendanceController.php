@@ -51,7 +51,7 @@ class AttendanceController extends Controller
 
 
     public function today_attendance(){
-
+        
          $attendance_todays = Attendance::whereDate('created_at', Carbon::today())
                                         ->where('absent', false)
                                         ->where('status', '=', null)
@@ -96,7 +96,8 @@ class AttendanceController extends Controller
                                     </div>
                                     <div class="col-xl-3">
                                         <h5 class="emp-name">'.$attendance_today -> employee -> employee_name.'</h5>
-                                        <p class="emp-no">'.$attendance_today->emp_no.'</p>
+                                        <p class="emp-no"> Name</p>
+                                        <p class="emp-no" hidden>'.$attendance_today->emp_no.'</p>
                                     </div>
                                     <div class="col-xl-2 td-div">';
 
@@ -352,7 +353,8 @@ class AttendanceController extends Controller
 
                  $data .= '<div class="ms-3">
                                 <h5 class="emp-name">'.$scanned -> employee -> employee_name.'</h5>
-                                <p class="emp-no">'.$scanned -> emp_no.'</p>
+                                <p class="emp-no"> Name</p>
+                                <p class="emp-no" hidden>'.$scanned -> emp_no.'</p>
                                 <span class="title">
                                     <i class="bx bxs-user-badge"></i>
                                     '.$scanned -> employee -> employee_position.'

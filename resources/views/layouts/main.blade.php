@@ -92,7 +92,7 @@
                     @endif
                        
 
-                        @if(Auth::user()->hasRole(['accounting','HR','assistantHR','attendance','teamleader']))
+                        {{-- @if(Auth::user()->hasRole(['accounting','HR','assistantHR','attendance','teamleader'])) --}}
 
                         <li class="nav-link {{ request()->segment(1) == 'attendance' ? 'nav-active' : '' }}"
                             data-tippy-content="Attendance" data-tippy-arrow="false">
@@ -103,7 +103,7 @@
                         </li>
                         
 
-                        @endif
+                        {{-- @endif --}}
 
                         @if(Auth::user()->hasRole(['accounting','HR', 'assistantHR','CEO']))
 

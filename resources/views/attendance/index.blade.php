@@ -50,7 +50,7 @@
                 {{-- Time Tracker Tab --}}
                 <div class="tab-pane fade show active" id="tracker" role="tabpanel" aria-labelledby="tracker-tab">
                     <div class="row">
-                        @if(Auth::user()->hasRole(['attendance']))
+                        {{-- @if(Auth::user()->hasRole(['attendance'])) --}}
                             <div class="col-xl-7">
 
                                 <div class="section-container">
@@ -165,9 +165,9 @@
                                     </div>
                                 </div>
                             </div>
-                        @else
+                        {{-- @else
                             <h4 class="text-center text-secondary my-5">You have no permission to access this page.</h4>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
 
