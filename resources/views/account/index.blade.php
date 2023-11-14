@@ -13,13 +13,14 @@
         {{-- left ----------------------------------------------------------------------------------------------------------------------------------------------}}
         <div class="col-lg-4 p-2">
             <div class="employee-card p-2">
-                <div class="d-flex justify-content-end">
-                    <a href="#" type="button" id="{{auth()->user()->employee->id ?? 'n/a'}}" class="btn-view editIcon" style="background-color: transparent; box-shadow: none;" data-tippy-content="Edit Profile" data-tippy-arrow="false" data-bs-toggle="modal" data-bs-target="#EditEmployee">
-                        <i class="bx bxs-edit fs-5" style="color:#999999"></i>
-                    </a>
-                </div>
+                
                     {{-- pic --}}
-                <div class="p-2">
+                <div class="p-2 section-container">
+                    <div class="d-flex justify-content-end">
+                        <a href="#" type="button" id="{{auth()->user()->employee->id ?? 'n/a'}}" class="btn-view editIcon" style="background-color: transparent; box-shadow: none;" data-tippy-content="Edit" data-tippy-arrow="false" data-bs-toggle="modal" data-bs-target="#EditEmployee">
+                            <i class="bx bxs-edit fs-5" style="color:#999999"></i>
+                        </a>
+                    </div>
                     <div class="text-center">
                         @if(Auth::user()->employee->image != null)
 
@@ -36,39 +37,26 @@
                     <div class="text-center">
                         <h1 class="mt-2 page-heading fs-3">{{auth()->user()->name}}</h1>
                         <p class="mt-1 emp-no d-flex align-items-center justify-content-center gap-1" style="color:#bc3d4f"><i class='bx bxs-user fs-6'></i>{{auth()->user()->employee->employee_department ?? 'n/a'}} Department</p>
-                        <p class="mt-1 emp-no d-flex align-items-center justify-content-center gap-1" style="color:#bc3d4f"><i class='bx bxl-google-plus fs-6'></i>{{auth()->user()->email ?? 'n/a'}}</p>
-                        <p class="mt-1 emp-no d-flex align-items-center justify-content-center gap-1" style="color:#bc3d4f"><i class='bx bx-phone fs-6'></i>{{auth()->user()->employee->employee_contact_number ?? 'n/a'}}</p>
+                        <p class="mt-1 emp-no d-flex align-items-center justify-content-center gap-1 mb-2" style="color:#bc3d4f"><i class='bx bxl-google-plus fs-6'></i>{{auth()->user()->email ?? 'n/a'}}</p>
                     </div>
 
                 </div>
                 {{-- profile info --}}
-                <div class="mt-3 section-container p-auto m-auto">
+                <div class="mt-3 p-2 m-auto">
                     <div class="row d-flex">
-                        <div>
-                            <div class="d-flex align-items-center col">
-                                <i class='bx bxs-user-detail section-icon'></i>
-                                <h5 class="section-header">Profile Info</h5>
-                            </div>
+                        <div class="d-flex">
+                            <span class="section-subheader d-flex align-items-center">
+                                <i class="bx bxs-user-detail"></i>
+                                Personal Info
+                            </span>
                         </div>
                         <div class="p-2">
                             <div>
                                 <table class="table">
                                     <tbody>
                                         <tr>
-                                            <td class="emp-no text-start">Username</span></td>
-                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->username ?? 'n/a'}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="emp-no text-start">Email</td>
-                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->email ?? 'n/a'}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="emp-no text-start">Department</td>
-                                            <td class="emp-no text-end" style="color: #bc3d4f">{{auth()->user()->employee->employee_department ?? 'n/a'}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="emp-no text-start">Position</td>
-                                            <td class="emp-no text-end" style="color: #bc3d4f">{{auth()->user()->position ?? 'n/a'}}</td>
+                                            <td class="emp-no text-start">Name</span></td>
+                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->name ?? 'n/a'}}</td>
                                         </tr>
                                         <tr>
                                             <td class="emp-no text-start">Address</td>
@@ -81,6 +69,48 @@
                                         <tr>
                                             <td class="emp-no text-start">Birthday</td>
                                             <td class="emp-no text-end" style="color:#bc3d4f">{{Carbon\Carbon::parse(auth()->user()->employee->employee_birthday)->format('M d, Y')}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+
+                        {{-- employee info --}}
+                        <div class="d-flex">
+                            <span class="section-subheader d-flex align-items-center">
+                                <i class="bx bxs-user-detail"></i>
+                                Employee Info
+                            </span>
+                        </div>
+                        <div class="p-2">
+                            <div>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td class="emp-no text-start">Employee Number</td>
+                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->employee->employee_no ?? 'n/a'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="emp-no text-start">Username</td>
+                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->username ?? 'n/a'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="emp-no text-start">Email</td>
+                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->email ?? 'n/a'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="emp-no text-start">Department</td>
+                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->employee->employee_department ?? 'n/a'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="emp-no text-start">Position</td>
+                                            <td class="emp-no text-end" style="color:#bc3d4f">{{auth()->user()->position ?? 'n/a'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="emp-no text-start">Work Schedule</td>
+                                            <td class="emp-no text-end" style="color:#bc3d4f">{{ isset(auth()->user()->employee->sched_start) ? date('h:i A', strtotime(auth()->user()->employee->sched_start)) : 'n/a' }} to {{ isset(auth()->user()->employee->sched_start) ? date('h:i A', strtotime(auth()->user()->employee->sched_end)): 'n/a' }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="emp-no text-start">SSS Number</td>
@@ -97,13 +127,14 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
                         </div>
 
                         {{-- emergency contct --}}
-                        <div class="d-flex align-items-center">
-                            <i class='bx bxs-phone section-icon'></i>
-                            <h5 class="section-header">Emergency Contact</h5>
+                        <div class="d-flex">
+                            <span class="section-subheader d-flex align-items-center">
+                                <i class="bx bxs-phone"></i>
+                                Emergency Contact
+                            </span>
                         </div>
                         <div class="p-2">
                             <div>
@@ -143,7 +174,7 @@
             </div>
 
             {{-- password qr--}}
-            <div class="row d-flex employee-card mt-3" style=" padding:20px; border-bottom: 3px solid #bc3d4f;">
+            <div class="row d-flex employee-card mt-3" style=" padding:20px;">
 
                 <div class="col-lg-5" >
 
@@ -528,33 +559,42 @@
                     <div class="form-row row">
                         <div class="col-xl-6">
                             <label for="txt-time">Base Salary:</label>
-                            <input type="number" name="base_salary" min="0" class="form-control" id="base_salary">
+                            <input type="number" name="base_salary" min="0" class="form-control" id="base_salary" readonly>
                             <span class="text-danger error-text base_salary_error"></span>
                         </div>
                         <div class="col-xl-6">
+                            <label for="txt-time">Monthly Rate:</label>
+                            <input type="text" name="monthly_rate" class="form-control" id="monthly_rate" readonly>
+                            <span class="text-danger error-text monthly_rate_error"></span>
+                        </div>
+                        {{-- <div class="col-xl-6">
                             <label for="">Monthly Rate:</label>
-                            <select name="monthly_rate" class="form-select" id="monthly_rate">
+                            <select name="monthly_rate" class="form-select" id="monthly_rate" readonly>
                                 <option value="">Select Rate</option>
                                 <option value="Daily Rate">Daily Rate</option>
                                 <option value="Fixed Rate">Fixed Rate</option>
                             </select>
                             <span class="text-danger error-text monthly_rate_error"></span>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="form-row row">
                         <div class="col-xl-6">
                             <label for="txt-time">Position:</label>
-                            <input type="text" name="employee_position" class="form-control" id="employee_position">
+                            <input type="text" name="employee_position" class="form-control" id="employee_position" readonly>
                             <span class="text-danger error-text employee_position_error"></span>
                         </div>
                         <div class="col-xl-6">
+                            <label for="txt-time">Department:</label>
+                            <input type="text" name="employee_department" class="form-control" id="employee_department" readonly>
+                            <span class="text-danger error-text employee_department_error"></span>
+                        </div>
+                        {{-- <div class="col-xl-6">
                             <label for="">Department:</label>
-                            <select name="employee_department" class="form-select" id="employee_department">
+                            <select name="employee_department" class="form-select" id="employee_department" readonly>
                                 <option value="Administration">Administration</option>
                                 <option value="App Intake">App Intake</option>
                                 <option value="Audit">Audit</option>
                                 <option value="Verification">Verification</option>
-                                {{-- <option value="Orenda">Orenda</option> --}}
                                 <option value="Returns">Returns</option>
                                 <option value="IT">IT</option>
                                 <option value="Project Management">Project Management</option>
@@ -562,17 +602,17 @@
                                 <option value="Provider Enrollment">Provider Enrollment</option>
                             </select>
                             <span class="text-danger error-text employee_department_error"></span>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="form-row row">
                         <div class="col-xl-6">
                             <label for="txt-time">Date Hired:</label>
-                            <input type="date" name="date_hired" class="form-control" id="date_hired">
+                            <input type="date" name="date_hired" class="form-control" id="date_hired" readonly>
                             <span class="text-danger error-text date_hired_error"></span>
                         </div>
                         <div class="col-xl-6">
                             <label for="txt-time">Allowance:</label>
-                            <input type="number" step="any" name="employee_allowance" class="form-control" id="employee_allowance">
+                            <input type="number" step="any" name="employee_allowance" class="form-control" id="employee_allowance" readonly>
                             <span class="text-danger error-text employee_allowance_error"></span>
                         </div>
                     </div>
@@ -606,19 +646,19 @@
                     <div class="form-row row">
                         <div class="col-xl-6">
                             <label for="txt-time">Start:</label>
-                            <input type="time" name="sched_start" class="form-control" id="sched_start">
+                            <input type="time" name="sched_start" class="form-control" id="sched_start" readonly>
                             <span class="text-danger error-text sched_start_error"></span>
                         </div>
                         <div class="col-xl-6">
                             <label for="txt-time">End:</label>
-                            <input type="time" name="sched_end" class="form-control" id="sched_end">
+                            <input type="time" name="sched_end" class="form-control" id="sched_end" readonly>
                             <span class="text-danger error-text sched_end_error"></span>
                         </div>
                     </div>
                     <div class="form-row row ">
                         <div class="col-xl-12">
                             <label for="">Employee Shift:</label>
-                            <select name="employee_shift" class="form-select" id="employee_shift">
+                            <select name="employee_shift" class="form-select" id="employee_shift" readonly>
                                 <option value="">Select Employee Shift</option>
                                 <option value="Day">Day Shift</option>
                                 <option value="Night">Night Shift</option>
@@ -627,7 +667,7 @@
                         </div>
                     </div>
                     <div class="form-row row">
-                        <label for="">Days:</label>
+                        <label for="" readonly>Days:</label>
                         <div class="days-wrp">
                             <label>
                                 <input type="checkbox" class="checkedit" name="work_days[]" value="Sunday" id="Sunday"><span>S</span>
@@ -667,12 +707,12 @@
                     <div class="form-row row">
                         <div class="col-xl-6">
                             <label for="txt-time">Start:</label>
-                            <input type="time" name="breaktime_start" class="form-control" id="breaktime_start">
+                            <input type="time" name="breaktime_start" class="form-control" id="breaktime_start" readonly>
                             <span class="text-danger error-text breaktime_start_error"></span>
                         </div>
                         <div class="col-xl-6">
                             <label for="txt-time">End:</label>
-                            <input type="time" name="breaktime_end" class="form-control" id="breaktime_end">
+                            <input type="time" name="breaktime_end" class="form-control" id="breaktime_end" readonly>
                             <span class="text-danger error-text breaktime_end_error"></span>
                         </div>
                     </div>

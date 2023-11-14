@@ -455,8 +455,8 @@ class AttendanceController extends Controller
 
                                         //START OF UNDERTIME
 
-                                        $timee = Carbon::createFromTime(18, 00, 00, 'GMT+8');
-                                        $timeOUT = Carbon::parse($timee)->format('H:i:s');//declared timeout for testing or debugging only
+                                        $timee = Carbon::createFromTime(11, 00, 00, 'GMT+8');
+                                        $timeOUT2 = Carbon::parse($timee)->format('H:i:s');//declared timeout for testing or debugging only
 
                                         $timeee = Carbon::now('GMT+8')->format('H:i:s');
                                         $timeOUT111 = Carbon::parse($timeee)->format('H:i:s');//realtime used in timeout
@@ -1026,7 +1026,7 @@ class AttendanceController extends Controller
 
                                                 Attendance::where('emp_no', '=', $request -> scanned)
                                                           ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
-                                                          ->update(['time_out' => $timeOUT]);
+                                                          ->update(['time_out' => $timeOUT1]);
 
                                                 $attend = Attendance::where('emp_no', '=', $request -> scanned)
                                                                     ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))

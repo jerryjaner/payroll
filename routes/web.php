@@ -52,12 +52,13 @@ Auth::routes();
     Route::get('/employee_bday', [DashboardController::class, 'employee_bday'])->name('employee_bday');
 
     // AccountController
-    //Route::get('/account', [AccountController::class, 'index'])->name('account');
+    Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::post('/update_password', [AccountController::class, 'update_password']);
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::get('/view-payslip1', [AccountController::class, 'view_payslip1'])->name('view_payslip1');
     Route::get('/employee-payroll1', [AccountController::class, 'get_all_payroll1'])->name('get_payroll1');
     Route::get('/edit-employees1', [AccountController::class, 'edit_employee1'])->name('edit_employee1');
+    //Route::post('/update1', [AccountController::class, 'update1'])->name('update1');
 
     // Attendance
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
@@ -213,7 +214,7 @@ Auth::routes();
     Route::post('/update_password', [UserController::class, 'update_password'])->name('update_password');
 
 
-    Route::get('/account',[AccountController::class, 'index'])->name('account');
+    // Route::get('/account',[AccountController::class, 'index'])->name('account');
 
 
  });
