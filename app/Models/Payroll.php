@@ -41,12 +41,15 @@ class Payroll extends Model
         'regular_holiday',
         'restday_special_holiday',
         'restday_regular_holiday',
+        'total_holiday',
+
         'overtime',
         'restday_overtime',
         'special_holiday_overtime',
         'regular_holiday_overtime',
         'restday_special_holiday_overtime',
         'restday_regular_holiday_overtime',
+        'total_overtime',
 
         
         

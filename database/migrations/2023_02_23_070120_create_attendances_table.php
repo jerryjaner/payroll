@@ -33,11 +33,27 @@ return new class extends Migration
             $table->date('date')->nullable();
             $table->datetime('night_shift_date')->nullable();
             $table->time('night_diff_hours')->nullable();
+
             $table->boolean('RDND')->nullable()->default(false);
+            $table->time('RDND_hours')->nullable();
+
             $table->boolean('SHND')->nullable()->default(false);
+            $table->time('SHND_hours')->nullable();
+
             $table->boolean('RHND')->nullable()->default(false);
+            $table->time('RHND_hours')->nullable();
+
             $table->boolean('RDSHND')->nullable()->default(false);
+            $table->time('RDSHND_hours')->nullable();
+
             $table->boolean('RDRHND')->nullable()->default(false);
+            $table->time('RDRHND_hours')->nullable();
+
+            
+           
+            
+            
+            
             // $table->string('overtime_approval')->nullable();
 
             $table->foreign('emp_no')

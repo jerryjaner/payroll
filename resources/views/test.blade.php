@@ -1,4 +1,4 @@
-@extends('layouts.main')
+{{-- @extends('layouts.main')
 @section('main-content')
 <div class="page-row row">
     <div class="col-xl-6">
@@ -14,4 +14,5 @@
 
 
 
-@endsection
+@endsection --}}
+

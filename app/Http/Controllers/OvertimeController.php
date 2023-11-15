@@ -616,6 +616,7 @@ class OvertimeController extends Controller
                     }
                 }
                 else if(Auth::user()->hasRole('VPO')){
+                    
                     if($all_overtime_request -> employee -> employee_department == 'Administration' || $all_overtime_request -> employee -> employee_department == 'App Intake' || $all_overtime_request -> employee -> employee_department == 'Audit' || $all_overtime_request -> employee -> employee_department == 'Verification' || $all_overtime_request -> employee -> employee_department == 'Returns'){
                         $output .= '<tr>
                                         <td>

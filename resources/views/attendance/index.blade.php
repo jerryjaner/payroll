@@ -118,28 +118,9 @@
                                                     <div id="employee_attendance" class="QR">
                                                         <input type="hidden" name="attendance_id" id="attendance_id">
 
-                                                        <input type="text" class="form-control  scanned" name="scanned" id="empID" style="text-align: center; font-size:16px;" placeholder="Employee Number"  >
+                                                        <input type="text" class="form-control  scanned" name="scanned" id="empID" style="text-align: center; font-size:16px;" placeholder="Employee Number">
                                                         <span class="text-danger error-text scanned_error"></span>
 
-                                                        {{-- <div class="col-xl-12">
-                                                            <label for="txt-time" class="QR">Time-In:</label>
-                                                            <input type="time" value="now" name="time_in QR" class="form-control QR" id="time_in" >
-                                                        </div>
-
-                                                        <div class="col-xl-12">
-                                                            <label for="txt-time" class="QR">Time-Out:</label>
-                                                            <input type="time" value="now" name="time_out" class="form-control QR" id="time_out" >
-                                                        </div>
-
-                                                        <div class="col-xl-12">
-                                                            <label for="txt-time" class="QR">Date</label>
-                                                            <input type="date" name="date_work" class="form-control QR" id="theDate" >
-                                                        </div>
-
-                                                        <div class="col-xl-12">
-                                                            <label for="txt-time" class="QR">Date Time:</label>
-                                                            <input type="datetime-local" value="" name="night_shift_date" class="form-control QR" id="cal" >
-                                                        </div> --}}
                                                         
                                                         <div class="form-row first-row">
                                                             <div class="d-flex justify-content-end">
@@ -326,7 +307,7 @@
                     </div>
                 </div>
 
-                   {{-- absent  Tab --}}
+                {{-- absent  Tab --}}
 
                 <div class="tab-pane fade show" id="absent" role="tabpanel" aria-labelledby="absent-tab">
                     <div class="row">
@@ -727,7 +708,7 @@
                         }
                     });
 
-                },1000);
+                },5000);
 
             });
 

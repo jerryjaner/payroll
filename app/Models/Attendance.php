@@ -35,7 +35,12 @@ class Attendance extends Model
         'SHND',
         'RHND',
         'RDSHND',
-        'RDRHND'
+        'RDRHND',
+        'RDND_hours',
+        'SHND_hours',
+        'RHND_hours',
+        'RDSHND_hours',
+        'RDRHND_hours',
 
     ];
 

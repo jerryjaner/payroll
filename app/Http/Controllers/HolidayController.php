@@ -63,10 +63,10 @@ class HolidayController extends Controller
                     <th  class="text-center border border-gray">Day</th>
                     <th  class="text-center border border-gray">Holiday Name</th>
                     <th  class="text-center border border-gray">Holiday Type</th>';
-                    if(Auth::user()->hasRole('accounting')){
+                  //  if(Auth::user()->hasRole('accounting')){
                         $output.='<th  class="text-center border border-gray" width="5%">Edit</th>
                                 <th  class="text-center border border-gray" width="5%">Delete</th>';
-                    }
+                   // }
       $output.='</tr>
             </thead>
             <tbody>';
@@ -85,7 +85,7 @@ class HolidayController extends Controller
                     <td>
                         <h5 class="name text-center">'. $holiday -> holiday_type.'</h5>
                     </td>';
-                    if(Auth::user()->hasRole('accounting')){
+                    // if(Auth::user()->hasRole('accounting')){
                           $output.=' <td>  
                                             <a href="#" id="' . $holiday -> id . '" type="button" class="btn-view1 text-success btn-sm mx-1 holiday_edit_icon" data-bs-toggle="modal" data-bs-target="#edit_holidays">
                                                 <i class="bx bx-edit"></i>
@@ -96,7 +96,7 @@ class HolidayController extends Controller
                                                 <i class="bx bx-trash"></i>
                                             </a>
                                     </td>';
-                    }
+                   // }
 
                    
              $output.='</tr> ';

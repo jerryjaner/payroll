@@ -817,7 +817,7 @@
             //     });
             // }
 
-            $(function() {
+        $(function() {
             $("#start_date").datepicker({
                 "dateFormat": "yy-mm-dd"
             });
@@ -1631,7 +1631,9 @@
                     var spe = response.special_holiday;
                     var rdsh = response.restday_special_holiday;
                     var rdrh = response.restday_regular_holiday;
-                    var total = parseFloat(reg) + parseFloat(spe) + parseFloat(rdsh) + parseFloat(rdrh);
+                    var over_all_sum = parseFloat(reg) + parseFloat(spe) + parseFloat(rdsh) + parseFloat(rdrh);
+
+                    var total = over_all_sum.toFixed(2); //Round OFf
 
                     //Add all OT
                     var overtime = response.overtime;
@@ -1640,8 +1642,10 @@
                     var regular_holiday_ot =  response.regular_holiday_overtime;
                     var restday_special_holiday_ot = response.restday_special_holiday_overtime;
                     var restday_regular_holiday_ot = response.restday_regular_holiday_overtime;
-                    var overtime_total =  parseFloat(overtime) + parseFloat(restday_ot) + parseFloat(special_holiday_ot) + parseFloat(regular_holiday_ot) + parseFloat(restday_special_holiday_ot) + parseFloat(restday_regular_holiday_ot);
-                  
+                    var over_all_sum_in_ot =  parseFloat(overtime) + parseFloat(restday_ot) + parseFloat(special_holiday_ot) + parseFloat(regular_holiday_ot) + parseFloat(restday_special_holiday_ot) + parseFloat(restday_regular_holiday_ot);
+                    
+                    var overtime_total = over_all_sum_in_ot.toFixed(2); //Round OFF
+
                   
                   
                     $("#payslip_id").val(response.id);
@@ -1672,7 +1676,9 @@
                     $("#absent").html( `${response.employee_absent}`);
                     $("#gross").html( `${response.gross}`);
                     $("#employee_restday").html( `${response.restday}`);
-                    $("#employee_reg_spe").html( `${total}`);
+                    // $("#employee_reg_spe").html( `${total}`);
+                    $("#employee_reg_spe").html( `${response.total_holiday}`);
+
 
                 }
             });

@@ -35,6 +35,7 @@ return new class extends Migration
             $table->decimal('regular_holiday', 15,2)->default(0.00);
             $table->decimal('restday_special_holiday', 15,2)->default(0.00);
             $table->decimal('restday_regular_holiday', 15,2)->default(0.00);
+            $table->decimal('total_holiday', 15,2)->default(0.00);
 
             $table->decimal('overtime', 15,2)->default(0.00);
             $table->decimal('restday_overtime', 15,2)->default(0.00);
