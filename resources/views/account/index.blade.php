@@ -741,13 +741,6 @@
 </div>
 {{-- END OF MODAL --}}
 
-
-
-
-
-
-
-
 <style>
 
     .vibrate-1 {

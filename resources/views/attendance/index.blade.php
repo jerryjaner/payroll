@@ -427,11 +427,6 @@
         <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js" rel="nofollow"></script>
      
         <script>
-          
-           
-
-        </script>
-        <script>
 
              document.addEventListener('DOMContentLoaded', function() {
 
@@ -708,7 +703,7 @@
                         }
                     });
 
-                },5000);
+                },1000);
 
             });
 
