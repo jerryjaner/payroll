@@ -147,7 +147,7 @@
                         <i class='bx bx-edit section-icon'></i>
                         <h5 class="section-header">HR Approval</h5>
                     </div>
-                    <input type="hidden" name="hr_id" id="hr_id">
+                    <input type="text"  name="hr_id" id="hr_id" hidden>
            
 
                     <h5 class="text-center mt-4">Do you really want to accept this request?</h5>

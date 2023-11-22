@@ -15,12 +15,15 @@ return new class extends Migration
     {
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id();
+            $table->longtext('memos')->nullable();
             $table->string('employee_name')->nullable();
             $table->string('employee_number')->nullable();
             $table->string('payment_type')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->date('pay_date')->nullable();
+            $table->decimal('add_adjustment', 15,2)->default(0.00);
+            $table->decimal('deduct_adjustment',total:15, places:2)->default(0.00);
             $table->decimal('employee_base_salary', 15,2)->nullable();
             $table->decimal('allowance',total:15, places:2)->nullable();
             $table->decimal('rate_per_hour',total:15, places:2)->nullable();
@@ -32,6 +35,7 @@ return new class extends Migration
             $table->decimal('regular_holiday', 15,2)->default(0.00);
             $table->decimal('restday_special_holiday', 15,2)->default(0.00);
             $table->decimal('restday_regular_holiday', 15,2)->default(0.00);
+            $table->decimal('total_holiday', 15,2)->default(0.00);
 
             $table->decimal('overtime', 15,2)->default(0.00);
             $table->decimal('restday_overtime', 15,2)->default(0.00);

@@ -95,12 +95,7 @@
                     </div>
                     <input type="hidden" name="holiday_id" id="holiday_id">
                     <div class="row form-row">
-                        <!-- <div class="d-flex">
-                            <span class="section-subheader d-flex align-items-center">
 
-                                Range of Compension
-                            </span>
-                        </div> -->
                         <div class="col-xl-12">
                             <label for="">Holiday Name:</label>
                             <input type="text" name="holiday_name" class="form-control" id="holiday_name">
@@ -115,7 +110,11 @@
                         </div>
                         <div class="col-xl-6">
                             <label for="">Holiday Type:</label>
-                            <input type="text" name="holiday_type" class="form-control" id="holiday_type">
+                            <select name="holiday_type" class="form-select" id="holiday_type">
+                                <option value="">Select Type</option>
+                                <option value="Regular">Regular Holiday</option>
+                                <option value="Special">Special Holiday</option>
+                            </select>
                             <span class="text-danger error-text holiday_type_error"></span>
                         </div>
                     </div>
@@ -344,6 +343,9 @@
                 }
             })
         });
+
+        
+
     });
 </script>
 

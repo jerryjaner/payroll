@@ -1,12 +1,18 @@
-@extends('layouts.main')
+{{-- @extends('layouts.main')
 @section('main-content')
 <div class="page-row row">
     <div class="col-xl-6">
         <h2 class="page-heading">User test</h2>
     </div>
+    <form>
+        <label for="telephone">Telephone Number:</label>
+        <input type="tel" id="telephone" name="telephone" value="09" required>
+        <input type="submit" value="Submit">
+    </form>
 </div>
 
 
+<<<<<<< HEAD
 <div class="container employee-card row d-flex justify-content-center p-3">
     <div class="row d-flex">
         <div class="col-md-6 p-1">
@@ -39,3 +45,9 @@
 
 
 @endsection
+=======
+
+
+@endsection --}}
+
+>>>>>>> 5dd2fdcfda457cd5bc750f1f7379e3fdd6e43160

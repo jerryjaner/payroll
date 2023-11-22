@@ -92,7 +92,7 @@
                     @endif
                        
 
-                        @if(Auth::user()->hasRole(['accounting','HR','assistantHR','attendance','teamleader']))
+                        {{-- @if(Auth::user()->hasRole(['accounting','HR','assistantHR','attendance','teamleader'])) --}}
 
                         <li class="nav-link {{ request()->segment(1) == 'attendance' ? 'nav-active' : '' }}"
                             data-tippy-content="Attendance" data-tippy-arrow="false">
@@ -103,7 +103,7 @@
                         </li>
                         
 
-                        @endif
+                        {{-- @endif --}}
 
                         @if(Auth::user()->hasRole(['accounting','HR', 'assistantHR','CEO']))
 
@@ -285,38 +285,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <img src="{{ asset('images/logo.png') }}" class="th-logo" alt="">
-                                {{-- <div class="search-wrapper ms-4">
-                                    <span class="search-input"  data-bs-toggle="modal" data-bs-target="#exampleModal">Search by NPI</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
-                                        stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" class="feather feather-search" viewBox="0 0 24 24">
-                                        <defs></defs>
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <path d="M21 21l-4.35-4.35"></path>
-                                    </svg>
-                                </div> --}}
                             </div>
-
-                            {{-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-custom modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                <i class='bx bx-x nav-icon'></i>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="d-flex align-items-center">
-                                                    <i class='bx bx-search' style="font-size: 2.5rem; margin-top: 5px;"></i>
-                                                    <input type="text" placeholder="Search provider by NPI" id="search-in" class="search-in ms-3" maxlength="10" autofocus>
-                                                </div>
-                                            </div>
-                                            <div id="search_items"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> --}}
 
                             <div class="d-flex justify-content-end align-items-center">
                                 <div class="d-flex align-items-center">
@@ -468,7 +437,7 @@
 
         <script>
 
-            @if (Session::has('message'))
+            if(Session::has('message'))
 
             toastr.options.progressBar = true;
             var type = "{{Session::get('alert-type','info')}}"
@@ -486,7 +455,7 @@
                 toastr.error("{{Session::get('message')}}");
                 break;
             }
-            @endif
+            endif
 
         </script>
         <script>
@@ -539,18 +508,7 @@
 
                 });
 
-                // $('.employee-tbl').DataTable({
-                //     scrollX: true,
-                //     pagingType: 'full_numbers',
-                //     "oLanguage": {
-                //         "oPaginate": {
-                //             "sNext": '<i class="bx bx-chevron-right pagination-icon"></i>',
-                //             "sPrevious": '<i class="bx bx-chevron-left pagination-icon"></i>',
-                //             "sFirst": '<i class="bx bx-chevrons-left pagination-icon"></i>',
-                //             "sLast": '<i class="bx bx-chevrons-right pagination-icon"></i>'
-                //         }
-                //     }
-                // });
+              
 
             })
         </script>
