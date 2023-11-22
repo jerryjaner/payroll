@@ -1006,7 +1006,6 @@ class PayrollController extends Controller
                                     ->where('end_date', '<=', $end_date)
                                     ->get();
 
-
             }
             else {  
                 

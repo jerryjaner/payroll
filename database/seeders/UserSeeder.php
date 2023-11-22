@@ -7,10 +7,12 @@ use App\Models\Employee;
 use App\Models\SSS_deduction;
 use App\Models\Philhealth_deduction;
 use App\Models\Pagibig_deduction;
+use App\Models\Holiday;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserSeeder extends Seeder
@@ -24,21 +26,20 @@ class UserSeeder extends Seeder
     {
         // $faker = Faker::create();
         // foreach(range(1,500) as $index){
-        //     DB::table('employees')->insert([
-        //         'employee_name' => $faker->name, 
-        //         'employee_no' => 'EMP_'.$faker->unique()->numberBetween(0,50000),
-        //         'qr' => rand(1, 50000),
-        //         'sched_start' => '08:00:00',
-        //         'sched_end' => '17:00:00',
-        //         'employee_birthday' => '1999-12-01',
-        //         'date_hired' => '2020-03-16',
-        //         'user_id' => rand(1, 50000), 
-        //         'daily_rate' => '350.00',
-        //         'employee_shift' => 'Day',  
+        //     DB::table('attendances')->insert([
+              
+        //         'emp_no' => 'EMP_'.$faker->unique()->numberBetween(0,50000),
+               
+        //         'time_in' => '08:00:00',
+        //         'time_out' => '06:00:00',
+        //         'work_hours' => '08:00:00',
+        //         'date' => '2020-03-16',
+     
+               
         //     ]);
         // }
 
-      
+        
         $user = User::create([
             'name' => 'Jerry Janer ',
             'username' => 'TH_user',
@@ -95,6 +96,15 @@ class UserSeeder extends Seeder
             'monthly_salary_to' =>  1500,
             'employees_share' => 100,
             'employer_share' => 100,
+
+        ]);
+
+
+        Holiday::create([
+
+            'holiday_name' => 'New Year',
+            'holiday_date' =>  '2024-01-01',
+            'holiday_type' => 'Regular',
 
         ]);
 
