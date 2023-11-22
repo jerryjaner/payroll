@@ -23,6 +23,8 @@ class AttendanceController extends Controller
             // $employee = LeaveReq::where('is_HR_Approved', '=', '1')
             //                     ->get();
 
+       
+
             $alleave_reqs = array();
             $allReq = LeaveReq::where('is_HR_Approved', '=', '1')
                               ->get();
@@ -51,19 +53,12 @@ class AttendanceController extends Controller
 
 
     public function today_attendance(){
-
+        
          $attendance_todays = Attendance::whereDate('created_at', Carbon::today())
                                         ->where('absent', false)
                                         ->where('status', '=', null)
                                         ->with('employee')
                                         ->get(['id','time_in','time_out','emp_no','date','created_at','updated_at']);
-
-
-
-
-        // $Employee_time_in_AM = "08:00:00";
-        // $Employee_time_out_PM = "17:00:00";
-        // $Employee_time_out = "16:59:00";
 
 		$output = '';
 		if ($attendance_todays ->count() > 0) {
@@ -103,7 +98,8 @@ class AttendanceController extends Controller
                                     </div>
                                     <div class="col-xl-3">
                                         <h5 class="emp-name">'.$attendance_today -> employee -> employee_name.'</h5>
-                                        <p class="emp-no">'.$attendance_today->emp_no.'</p>
+                                        <p class="emp-no"> Name</p>
+                                        <p class="emp-no" hidden>'.$attendance_today->emp_no.'</p>
                                     </div>
                                     <div class="col-xl-2 td-div">';
 
@@ -359,7 +355,8 @@ class AttendanceController extends Controller
 
                  $data .= '<div class="ms-3">
                                 <h5 class="emp-name">'.$scanned -> employee -> employee_name.'</h5>
-                                <p class="emp-no">'.$scanned -> emp_no.'</p>
+                                <p class="emp-no"> Name</p>
+                                <p class="emp-no" hidden>'.$scanned -> emp_no.'</p>
                                 <span class="title">
                                     <i class="bx bxs-user-badge"></i>
                                     '.$scanned -> employee -> employee_position.'
@@ -1649,10 +1646,10 @@ class AttendanceController extends Controller
 
                                                     
                                                     // Overtime Computation
-                                                    $time_out =  Carbon::now('GMT+8')->format('H:i');
+                                                    $time_out =  Carbon::now('GMT+8')->format('H:i:s');
                                                     $schedule_end = Carbon::parse($data -> employee -> sched_end);
                                                     $interval = $schedule_end->diffInSeconds($time_out);
-                                                    $total_overtime = gmdate('H:00:00', $interval);
+                                                    $total_overtime = gmdate('H:i:s', $interval);
 
 
                                                     //Work hour
@@ -1661,12 +1658,6 @@ class AttendanceController extends Controller
                                                     $timein = Carbon::parse($data -> night_shift_date);
                                                     $interval = $timein->diffInSeconds($timeout);
                                                     $totalDuration = gmdate('H:00:00', $interval);
-
-                                                    //getting exact work hour by subtracting ot to total duration
-                                                    $total_OT = Carbon::parse($total_overtime);
-                                                    $total_workhours = Carbon::parse($totalDuration);
-                                                    $workhours_nightdiff = $total_workhours->diffInSeconds($total_OT);
-                                                    $total =  gmdate('H:00:00', $workhours_nightdiff);
 
 
                                                     if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s'))
@@ -1749,7 +1740,7 @@ class AttendanceController extends Controller
                                                     Attendance::where('emp_no', '=', $request -> scanned)
                                                               ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
                                                               ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
-                                                                        'work_hours' => $total,
+                                                                        'work_hours' => $totalDuration,
                                                                         'night_diff_hours' => $night_diff_total_hours]);
 
                                                     return response()->json([
@@ -1767,31 +1758,28 @@ class AttendanceController extends Controller
 
                     
                                                  
-                                                        if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s')){
+                                                    if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s')){
 
-                                               
-                                                            // NIGHT DIFFERENTIAL HOURS
-                                                       
-                                                            $start = Carbon::parse($data->night_shift_date);
-                                                            //$out =  Carbon::now('GMT+8')->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                            $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                            $diff = $start->diffInSeconds($out);
-                                                            $night_diff_total_hours = gmdate('H:i:s', $diff);   
-
-                                                        }
-                                                        else
-                                                        {
-                                                            //NIGHT DIFFERENTIAL HOURS
-                                                            $start = Carbon::createFromFormat('H:i:s', '22:00:00'); //10pm
-                                                            //$out =  Carbon::now('GMT+8')->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                            $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                            $diff = $start ->diffInSeconds($out);
-                                                            $night_diff_total_hours = gmdate('H:i:s', $diff);
-                                                        }
-
-                                                   
-
+                                            
+                                                        // NIGHT DIFFERENTIAL HOURS
                                                     
+                                                        $start = Carbon::parse($data->night_shift_date);
+                                                        //$out =  Carbon::now('GMT+8')->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                        $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
+                                                        $diff = $start->diffInSeconds($out);
+                                                        $night_diff_total_hours = gmdate('H:i:s', $diff);   
+
+                                                    }
+                                                    else
+                                                    {
+                                                        //NIGHT DIFFERENTIAL HOURS
+                                                        $start = Carbon::createFromFormat('H:i:s', '22:00:00'); //10pm
+                                                        //$out =  Carbon::now('GMT+8')->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                        $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
+                                                        $diff = $start ->diffInSeconds($out);
+                                                        $night_diff_total_hours = gmdate('H:i:s', $diff);
+                                                    }
+                                                  
                                                     //undertime
                                                     $emp_sched_out = Carbon::parse($data ->employee-> sched_end)->addDay(1);
                                                     $out_today = Carbon::parse($data ->employee-> breaktime_end)->addDay(1);
@@ -2073,7 +2061,6 @@ class AttendanceController extends Controller
                                                             break;
                                                     }
 
-
                                                     Attendance::where('emp_no', '=', $request -> scanned)
                                                               ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
                                                               ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
@@ -2099,7 +2086,6 @@ class AttendanceController extends Controller
                                     {   
                                         if($data -> time_in != null && $data -> time_out != null ){
 
-                                           
                                             return response()->json([
                                                 'status'=>0,
                                                 'error' => 'Time in and Time out is already completed'
@@ -2121,8 +2107,6 @@ class AttendanceController extends Controller
                                                     $timein = Carbon::parse($data -> night_shift_date);
                                                     $interval = $timein->diffInSeconds($timeout);
                                                     $totalDuration = gmdate('H:i:s', $interval);
-
-
 
                                                     //NIGHT DIFFERENTIAL
                                                     if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s'))
@@ -2199,24 +2183,497 @@ class AttendanceController extends Controller
                                                         break;
                                                     }
 
-                                                        Attendance::where('emp_no', '=', $request -> scanned)
-                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
-                                                                    ->update(['time_out' => Carbon::parse($data->employee->sched_end),
-                                                                        'work_hours' => $totalDuration,
-                                                                        'night_diff_hours' => $night_diff_total_hours]);
-
-                                                        return response()->json([
-
-                                                            'status' => 200,
-                                                            'msg' => 'Overtime Recorded Successfully',
-
-                                                        ]);
+                                                    foreach($holidays as $holiday){
+                                                                 
+                                                        $todays_Date = Carbon::today('GMT+8')->format('m-d');
+                                                        $office_holiday = Carbon::parse($holiday->holiday_date)->format('m-d');
 
 
+                                                        if($todays_Date === $office_holiday){
 
+                                                            if($data->RDND == true && $holiday->holiday_type == 'Regular'){
+                                            
+                                                                //REST DAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                        
+                                                                //REGULAR HOLIDAY
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                               
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                'work_hours' => $totalDuration,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'RHND' => true,
+                                                                                'RDND_hours' => $restday_total_holiday_hours,
+                                                                                'RHND_hours' => $regular_holiday_hours
+                                                                            ]);
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+
+                                                                ]);
+                                        
+                                        
+                                                            }
+                                                            elseif($data->RHND == true && $holiday->holiday_type == 'Regular'){
+                                                               
+                                                                //FOR THE RHND 
+                                                                //ADD the previous holiday which is Regular holiday to toddays holiday which Regular holiday again
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $time_out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($time_out);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                               
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                        ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                            'work_hours' => $totalDuration,
+                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                        ]);
+
+                                                                return response()->json([
+                                
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+        
+                                        
+                                                            }
+                                                            elseif($data->RDRHND == true && $holiday->holiday_type == 'Regular'){
+                                                           
+                                                                //REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                        
+                                                                //REGULAR HOLIDAY
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                              
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND' => true,
+                                                                                    'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                            ]);
+
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+                                        
+                                                            }  
+                                                            elseif($data->RHND == true && $holiday->holiday_type == 'Special'){
+                                                               
+                                                                //REGULAR HOLIDAY YESTERDAY
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                //Special Holiday nextday
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                'work_hours' => $totalDuration,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'SHND' => true,
+                                                                                'SHND_hours' => $special_holiday_hours,
+                                                                                'RHND_hours' => $regular_holiday_hours,
+                                                                            ]);
+
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+
+
+                                                            }
+                                                            elseif($data->RDRHND == true && $holiday->holiday_type == 'Special'){
+                                                             
+                                                                //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                 //Special Holiday nextday
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                        ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                            'work_hours' => $totalDuration,
+                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                            'SHND' => true,
+                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                            'RDRHND_hours' => $restday_regular_total_holiday_hours
+                                                                        ]);
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+
+
+                                                            }
+                                                            elseif($data->RDND == true && $holiday->holiday_type == 'Special'){
+    
+                                                                //REST DAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                    
+                                                                //SPECIAL HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                            
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                'work_hours' => $totalDuration,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'SHND' => true,
+                                                                                'RDND_hours' => $restday_total_holiday_hours,
+                                                                                'SHND_hours' => $special_holiday_hours,
+                                                                            
+                                                                            ]);
+                                                
+                                                                return response()->json([
+                                    
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                    
+                                    
+                                                            }
+                                                            elseif($data->SHND == true && $holiday->holiday_type == 'Special'){
+                                                                //FOR THE SHND 
+                                                                //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $time_out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($time_out);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                            
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                'work_hours' => $totalDuration,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'SHND_hours' => $special_holiday_hours,
+                                                                            ]);
+            
+                                                                return response()->json([
+                                    
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                                            }
+                                                            elseif($data->RDSHND == true && $holiday->holiday_type == 'Special'){
+                                            
+                                                                //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                    
+                                                                //SPECIAL HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                    
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                'work_hours' => $totalDuration,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'SHND' => true,
+                                                                                'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                'SHND_hours' => $special_holiday_hours
+                                                                            ]);
+                                                                
+                                                                return response()->json([
+                                    
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                                            }
+                                                            elseif($data->SHND == true && $holiday->holiday_type == 'Regular'){
+
+                                                                //FOR THE SHND 
+                                                                //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                             
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                //Regular HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                'work_hours' => $totalDuration,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'RHND' => true,
+                                                                                'SHND_hours' => $special_holiday_hours,
+                                                                                'RHND_hours' => $regular_holiday_hours,
+                                                                            
+                                                                            ]);
+                                                                return response()->json([
+                                
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+
+                                                            }
+                                                            else{
+                                                                
+                                                               
+                                                                 //FOR THE RDSHND 
+                                                                //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                //Regular HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                'work_hours' => $totalDuration,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'RHND' => true,
+                                                                                'RDSHND_hours' => $restday_special_holiday_hours,
+                                                                                'RHND_hours' => $regular_holiday_hours,
+                                                                            
+                                                                            ]);
+                                                                return response()->json([
+                                
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                                            }
+                                    
+                                                        }   
+                                                    
+                                                        else{   
+                                                          
+                                                            #need to use switch case
+                                                            switch($data){
+                                                               
+                                                                //Rest day Night shift
+                                                                case $data -> RDND == true:
+                                                                   
+                                                                    //REST DAY NIGHT SHIFT
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                            
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RDND_hours' => $restday_total_holiday_hours,
+                                                                                ]);
+                                                                    return response()->json([
+                                            
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                            
+                                                                    ]);
+
+                                                                break;
+        
+                                                                //rest day special holiday Night shift
+                                                                case $data -> SHND == true:
+
+                                                                    //Special Holiday
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'SHND_hours' => $special_holiday_hours
+                                                                                ]);
+
+                                                                    return response()->json([
+                                    
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                    ]);
+
+                                                                break;
+        
+                                                                //rest day regular holiday Night shift
+                                                                case $data -> RHND == true:
+
+                                                                    //REGULAR HOLIDAY YESTERDAY
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours
+                                                                                ]);
+
+                                                                    return response()->json([
+                                            
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                            
+                                                                    ]);
+                                                                    
+                                                                break;
+        
+                                                                //rest day special holiday Night shift
+                                                                case $data -> RDSHND == true:
+        
+                                                                    //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                        
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RDSHND_hours' => $restday_special_total_holiday_hours
+                                                                                ]);
+
+                                                                    return response()->json([
+                                        
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                    ]);
+                                                                break;
+                                                                
+                                                                //rest day regular holiday Night shift
+                                                                case $data -> RDRHND == true:
+                                                                    
+                                                                    //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RDRHND_hours' => $restday_regular_total_holiday_hours
+                                                                                ]);
+
+                                                                    return response()->json([
+                                            
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                            
+                                                                    ]);
+
+                                                                   
+                                                                break;
+                                                                                                                       
+                                                                default:
+                                                                   
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::parse($data->employee->sched_end),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'night_diff_hours' => $night_diff_total_hours
+                                                                                
+                                                                                ]);
+                                                            
+
+                                                                    return response()->json([
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance updated Successfully',
+                                                                    ]);
+                                                                   
+                                                                break;
+
+                                                            }
+                                                          
+                                                        }
+                                                    
+                                                    }
 
                                                 }
-                                                else{
+                                                else
+                                                {
 
                                                     //HOURS NOW IS GREATER THAN EQUAL TO EMPLOYEE BREAKTIME  START AND LESS THAN OR EQUAL TO   EMPLOYEE BREAKTIME  END
                                                     if(Carbon::now('GMT+8')->format('H:i:s') >= Carbon::parse($data->employee->breaktime_start)->format('H:i:s') && Carbon::now('GMT+8')->format('H:i:s') <= Carbon::parse($data->employee->breaktime_end)->format('H:i:s') ){
@@ -2545,7 +3002,6 @@ class AttendanceController extends Controller
                                             else
                                             {
                                                
-
                                                 //Time out is Greater than equal to  schedule of employee
                                                 if(Carbon::now('GMT+8')->format('H:i:s') >= $data -> employee -> sched_end)
                                                 {
@@ -2584,26 +3040,500 @@ class AttendanceController extends Controller
                                                         $night_diff_total_hours = gmdate('H:i:s', $diff);
                                                     }
 
+                                                    foreach($holidays as $holiday){
+                                                                 
+                                                        $todays_Date = Carbon::today('GMT+8')->format('m-d');
+                                                        $office_holiday = Carbon::parse($holiday->holiday_date)->format('m-d');
 
 
+                                                        if($todays_Date === $office_holiday){
 
-                                                    Attendance::where('emp_no', '=', $request -> scanned)
-                                                              ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
-                                                              ->update(['time_out' => $data -> employee -> sched_end,
-                                                                        'night_diff_hours' => $night_diff_total_hours,
-                                                                        'work_hours' => $employee_total_work_hours]);
+                                                            if($data->RDND == true && $holiday->holiday_type == 'Regular'){
+                                            
+                                                                //REST DAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                        
+                                                                //REGULAR HOLIDAY
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                        ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'RHND' => true,
+                                                                                    'RDND_hours' => $restday_total_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                ]);
+                                        
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+                                        
+                                        
+                                                            }
+                                                            elseif($data->RHND == true && $holiday->holiday_type == 'Regular'){
+                                                               
+                                                                //FOR THE RHND 
+                                                                //ADD the previous holiday which is Regular holiday to toddays holiday which Regular holiday again
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $time_out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($time_out);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                               ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                              ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'work_hours' => $employee_total_work_hours,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'RHND_hours' => $regular_holiday_hours,
+                                                                                    
+                                                                                    ]);
+                                        
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+                                        
+                                                            }
+                                                            elseif($data->RDRHND == true && $holiday->holiday_type == 'Regular'){
+                                                           
+                                                                //REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                        
+                                                                //REGULAR HOLIDAY
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                              
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                          ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                         ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'RHND' => true,
+                                                                                    'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                ]);
+                                        
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+                                        
+                                                            }  
+                                                            elseif($data->RHND == true && $holiday->holiday_type == 'Special'){
+                                                               
+                                                                //REGULAR HOLIDAY YESTERDAY
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                //Special Holiday nextday
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                          ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                         ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'SHND' => true,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                ]);
                                                
+                                        
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+
+
+                                                            }
+                                                            elseif($data->RDRHND == true && $holiday->holiday_type == 'Special'){
+                                                             
+                                                                //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                 //Special Holiday nextday
+                                                                $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                          ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                          ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'SHND' => true,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                    'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                ]);
+                                                                return response()->json([
+                                        
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                ]);
+
+
+                                                            }
+                                                            elseif($data->RDND == true && $holiday->holiday_type == 'Special'){
+    
+                                                                //REST DAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                    
+                                                                //SPECIAL HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                            
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'SHND' => true,
+                                                                                    'RDND_hours' => $restday_total_holiday_hours,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                
+                                                                                ]);
+                                    
+                                                                return response()->json([
+                                    
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                    
+                                    
+                                                            }
+                                                            elseif($data->SHND == true && $holiday->holiday_type == 'Special'){
+                                                                //FOR THE SHND 
+                                                                //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $time_out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($time_out);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                            
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                ]);
+                                    
+                                                                return response()->json([
+                                    
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                                            }
+                                                            elseif($data->RDSHND == true && $holiday->holiday_type == 'Special'){
+                                            
+                                                                //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                    
+                                                                //SPECIAL HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                    
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                        ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                'work_hours' => $employee_total_work_hours,
+                                                                                'SHND' => true,
+                                                                                'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                'SHND_hours' => $special_holiday_hours,
+                                                                            ]);
+                                                                
+                                                                return response()->json([
+                                    
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                                            }
+                                                            elseif($data->SHND == true && $holiday->holiday_type == 'Regular'){
+
+                                                                //FOR THE SHND 
+                                                                //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                             
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                //Regular HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'RHND' => true,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                ]);
+                                                                return response()->json([
+                                
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+
+                                                            }
+                                                            else{
+                                                                
+                                                                // $data->RDSHND == true && $holiday->holiday_type == 'Regular'
+                                                                 //FOR THE SHND 
+                                                                //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
+                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                //Regular HOLIDAY
+                                                                $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $timeout = Carbon::parse($out);
+                                                                $subtract = $timeout->diffInSeconds($start);
+                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'RHND' => true,
+                                                                                    'RDSHND_hours' => $restday_special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                ]);
+
+                                                                return response()->json([
+                                
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                    
+                                                                ]);
+                                                            }
+                                    
+                                                        }   
+                                                        //NEED TO TEST TOMMOROW
+                                                        else{   
+                                                          
+                                                            #need to use switch case
+                                                            switch($data){
+                                                               
+                                                                //Rest day Night shift
+                                                                case $data -> RDND == true:
+                                                                   
+                                                                    //REST DAY NIGHT SHIFT
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                            
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'work_hours' => $employee_total_work_hours,
+                                                                                    'RDND_hours' => $restday_total_holiday_hours,
+                                                                                ]);
+                                            
+                                                                    return response()->json([
+                                            
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                            
+                                                                    ]);
+
+                                                                break;
+        
+                                                                //rest day special holiday Night shift
+                                                                case $data -> SHND == true:
+
+                                                                    //Special Holiday
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'work_hours' => $employee_total_work_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                                
+                                                                    return response()->json([
+                                    
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                    ]);
+
+                                                                break;
+        
+                                                                //rest day regular holiday Night shift
+                                                                case $data -> RHND == true:
+
+                                                                    //REGULAR HOLIDAY YESTERDAY
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'work_hours' => $employee_total_work_hours,
+                                                                                        'RHND_hours' => $regular_holiday_hours,
+                                                                                    ]);
+
+                                                                    return response()->json([
+                                            
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                            
+                                                                    ]);
+                                                                    
+                                                                break;
+        
+                                                                //rest day special holiday Night shift
+                                                                case $data -> RDSHND == true:
+        
+                                                                    //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                        
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'work_hours' => $employee_total_work_hours,
+                                                                                        'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                    ]);
+                                                                    return response()->json([
+                                        
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                        
+                                                                    ]);
+                                                                break;
+                                                                
+                                                                //rest day regular holiday Night shift
+                                                                case $data -> RDRHND == true:
+                                                                    
+                                                                    //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                    $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'work_hours' => $employee_total_work_hours,
+                                                                                        'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                    ]);
+                                                                    return response()->json([
+                                            
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                            
+                                                                    ]);
+
+                                                                   
+                                                                break;
+                                                                                                                       
+                                                                default:
+                                                                   
+                                                                     Attendance::where('emp_no', '=', $request -> scanned)
+                                                                              ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
+                                                                              ->update(['time_out' => $data -> employee -> sched_end,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'work_hours' => $employee_total_work_hours]);
+                                                            
+
+                                                                    return response()->json([
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance updated Successfully',
+                                                                    ]);
+                                                                   
+                                                                break;
+
+                                                            }
+                                                          
+                                                        }
+                                                    
+                                                    }
                                                     
 
-                                                    return response()->json([
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance updated Successfully',
-                                                    ]);
 
                                                 }
                                                 else
                                                 {
-                                                    //dd('false');
+                                                    
                                                     if($data -> emp_no == $request -> scanned && $data -> date == Carbon::now('GMT+8')->subDay(1)->format('Y-m-d') && $data -> time_out === null){
 
                                                         if(Carbon::now('GMT+8')->format('H:i:s') < $data ->employee->sched_end )
@@ -2645,21 +3575,541 @@ class AttendanceController extends Controller
                                                                 $interval = $timein->diffInSeconds($timeout);
                                                                 $totalDuration = gmdate('H:i:s', $interval);
 
-                                                                // dd($totalDuration);
+                                                                
+                                                                foreach($holidays as $holiday){
+                                                                 
+                                                                    $todays_Date = Carbon::today('GMT+8')->format('m-d');
+                                                                    $office_holiday = Carbon::parse($holiday->holiday_date)->format('m-d');
 
-                                                                Attendance::where('emp_no', '=', $request -> scanned)
+
+                                                                    if($todays_Date === $office_holiday){
+
+                                                                        if($data->RDND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('1');
+                                                                            //REST DAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND' => true,
+                                                                                            'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                    
+                                                                        }
+                                                                        elseif($data->RHND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('2');
+                                                                            //FOR THE RHND 
+                                                                            //ADD the previous holiday which is Regular holiday to toddays holiday which Regular holiday again
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                            
+                                                                            //dd('RHND at Holiday ngayon');
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                      ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                      ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                                        }
+                                                                        elseif($data->RDRHND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('3');
+                                                                            //REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND' => true,
+                                                                                            'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                                        }  
+                                                                        elseif($data->RHND == true && $holiday->holiday_type == 'Special'){
+                                                                           
+                                                                            //REGULAR HOLIDAY YESTERDAY
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            //Special Holiday nextday
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+
+
+                                                                        }
+                                                                        elseif($data->RDRHND == true && $holiday->holiday_type == 'Special'){
+                                                                             //  dd('ops');
+                                                                             //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                             $time_in = Carbon::parse($data->night_shift_date);
+                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                             $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                             //Special Holiday nextday
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                            'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+
+
+                                                                        }
+                                                                        elseif($data->RDND == true && $holiday->holiday_type == 'Special'){
+                                                                            // dd('4');
+                                                                            //REST DAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                                //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                        
+                                                
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                
+                                                
+                                                                        }
+                                                                        elseif($data->SHND == true && $holiday->holiday_type == 'Special'){
+                                                                        
+                                                                             //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                        
+                                                                        
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                                        elseif($data->RDSHND == true && $holiday->holiday_type == 'Special'){
+                                                                            // dd('6');
+                                                                            //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                            //SPECIAL HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                                        elseif($data->SHND == true && $holiday->holiday_type == 'Regular'){
+
+                                                                            // dd('1');
+                                                                            //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                         
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            //Regular HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
                                                                             ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
                                                                             ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
                                                                                     'work_hours' => $totalDuration,
                                                                                     'undertime_hours' => $undertime,
-                                                                                    'night_diff_hours' => $night_diff_total_hours]);
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND' => true,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                
+                                                                                ]);
+                                                                        
+                                                                            return response()->json([
+                                            
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
 
-                                                                return response()->json([
+                                                                        }
+                                                                        else{
+                                                                            
+                                                                            // $data->RDSHND == true && $holiday->holiday_type == 'Regular'
+                                                                            // dd('2');
 
-                                                                    'status' => 200,
-                                                                    'msg' => 'Overtime Recorded Successfully',
+                                                                             //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
-                                                                ]);
+
+                                                                            //Regular HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'undertime_hours' => $undertime,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND' => true,
+                                                                                    'RDSHND_hours' => $restday_special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                
+                                                                                ]);
+                                                                            return response()->json([
+                                            
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                
+                                                                    }   
+                                                                    else{   
+                                                                      
+                                                                        
+                                                                        #need to use switch case
+                                                                        switch($data){
+                                                                           
+                                                                            //Rest day Night shift
+                                                                            case $data -> RDND == true:
+                                                                            
+                                                                                //REST DAY NIGHT SHIFT
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                        
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            ]);
+                                                        
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+
+                                                                                break;
+                    
+                                                                            //rest day special holiday Night shift
+                                                                            case $data -> SHND == true:
+
+                                                                                //Special Holiday
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                        'work_hours' => $totalDuration,
+                                                                                        'undertime_hours' => $undertime,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'SHND_hours' => $special_holiday_hours,
+                                                                                    
+                                                                                    ]);
+                                                                            
+                                                                                return response()->json([
+                                                
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                                ]);
+
+                                                                                 break;
+                    
+                                                                            //rest day regular holiday Night shift
+                                                                            case $data -> RHND == true:
+
+                                                                                //REGULAR HOLIDAY YESTERDAY
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RHND_hours' => $regular_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                    
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+                                                                                
+                                                                                 break;
+                    
+                                                                            //rest day special holiday Night shift
+                                                                            case $data -> RDSHND == true:
+                    
+                                                                                //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                    
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                    
+                                                                                return response()->json([
+                                                    
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                                ]);
+                                                                                 break;
+                                                                            
+                                                                            //rest day regular holiday Night shift
+                                                                            case $data -> RDRHND == true:
+                                                                                
+                                                                                //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                        
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+
+                                                                               
+                                                                                break;
+                                                                            
+                                                                           
+                                                                    
+                                                                            default:
+                                                                               
+                                                                                    //Update attendance if yesterday is not holiday 
+                                                                                    Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                            ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                    'work_hours' => $totalDuration,
+                                                                                                    'undertime_hours' => $undertime,
+                                                                                                    'night_diff_hours' => $night_diff_total_hours]);
+                        
+                                                                                    return response()->json([
+                            
+                                                                                        'status' => 200,
+                                                                                        'msg' => 'Attendance Recorded Successfully',
+                            
+                                                                                    ]);
+                        
+                                                                             break;
+
+
+                                                                        }
+
+                                                                     
+                                                                        
+                                                                    }
+                                                                   
+
+
+                                                                }
+
 
                                                             }
                                                             //HOURS NOW IS GREATER THAN EMPLOYEE BREAKTIME  END
@@ -2696,19 +4146,542 @@ class AttendanceController extends Controller
                                                                 $sum = $emp_sched_out -> diffInSeconds($out_today);
                                                                 $undertime = gmdate('H:i:s', $sum);
 
-                                                                Attendance::where('emp_no', '=', $request -> scanned)
-                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
-                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
-                                                                                'work_hours' => $totalDuration,
-                                                                                'undertime_hours' => $undertime,
-                                                                                'night_diff_hours' => $night_diff_total_hours]);
-    
-                                                                return response()->json([
-        
-                                                                    'status' => 200,
-                                                                    'msg' => 'Overtime Recorded Successfully',
-        
-                                                                ]);
+                                                                
+                                                                foreach($holidays as $holiday){
+                                                                 
+                                                                    $todays_Date = Carbon::today('GMT+8')->format('m-d');
+                                                                    $office_holiday = Carbon::parse($holiday->holiday_date)->format('m-d');
+
+
+                                                                    if($todays_Date === $office_holiday){
+
+                                                                        if($data->RDND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('1');
+                                                                            //REST DAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                        
+                                                    
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND' => true,
+                                                                                            'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                    
+                                                                        }
+                                                                        elseif($data->RHND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('2');
+                                                                            //FOR THE RHND 
+                                                                            //ADD the previous holiday which is Regular holiday to toddays holiday which Regular holiday again
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                            
+                                                                            //dd('RHND at Holiday ngayon');
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                      ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                      ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                                        }
+                                                                        elseif($data->RDRHND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('3');
+                                                                            //REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND' => true,
+                                                                                            'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                                        }  
+                                                                        elseif($data->RHND == true && $holiday->holiday_type == 'Special'){
+                                                                           
+                                                                            //REGULAR HOLIDAY YESTERDAY
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            //Special Holiday nextday
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+
+
+                                                                        }
+                                                                        elseif($data->RDRHND == true && $holiday->holiday_type == 'Special'){
+                                                                          //  dd('ops');
+                                                                             //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                             $time_in = Carbon::parse($data->night_shift_date);
+                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                             $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                             //Special Holiday nextday
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                            'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+
+
+                                                                        }
+                                                                        elseif($data->RDND == true && $holiday->holiday_type == 'Special'){
+                                                                            // dd('4');
+                                                                            //REST DAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                                //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                        
+                                                
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                
+                                                
+                                                                        }
+                                                                        elseif($data->SHND == true && $holiday->holiday_type == 'Special'){
+                                                                            // dd('5');
+                                                                             //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                        
+                                                                        
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                                        elseif($data->RDSHND == true && $holiday->holiday_type == 'Special'){
+                                                                            // dd('6');
+                                                                            //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                            //SPECIAL HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                                        elseif($data->SHND == true && $holiday->holiday_type == 'Regular'){
+
+                                                                            // dd('1');
+                                                                            //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                         
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            //Regular HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'undertime_hours' => $undertime,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND' => true,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                
+                                                                                ]);
+                                                                        
+                                                                            return response()->json([
+                                            
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+
+                                                                        }
+                                                                        else{
+                                                                            
+                                                                            // $data->RDSHND == true && $holiday->holiday_type == 'Regular'
+                                                                            // dd('2');
+
+                                                                             //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
+
+
+                                                                            //Regular HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->subHour(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'undertime_hours' => $undertime,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND' => true,
+                                                                                    'RDSHND_hours' => $restday_special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                
+                                                                                ]);
+                                                                            return response()->json([
+                                            
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                
+                                                                    }   
+                                                                    else{   
+                                                                      
+                                                                        
+                                                                        #need to use switch case
+                                                                        switch($data){
+                                                                           
+                                                                            //Rest day Night shift
+                                                                            case $data -> RDND == true:
+                                                                            
+                                                                                //REST DAY NIGHT SHIFT
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                        
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            ]);
+                                                        
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+
+                                                                                break;
+                    
+                                                                            //rest day special holiday Night shift
+                                                                            case $data -> SHND == true:
+
+                                                                                //Special Holiday
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                        'work_hours' => $totalDuration,
+                                                                                        'undertime_hours' => $undertime,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'SHND_hours' => $special_holiday_hours,
+                                                                                    
+                                                                                    ]);
+                                                                            
+                                                                                return response()->json([
+                                                
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                                ]);
+
+                                                                                 break;
+                    
+                                                                            //rest day regular holiday Night shift
+                                                                            case $data -> RHND == true:
+
+                                                                                //REGULAR HOLIDAY YESTERDAY
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RHND_hours' => $regular_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                    
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+                                                                                
+                                                                                 break;
+                    
+                                                                            //rest day special holiday Night shift
+                                                                            case $data -> RDSHND == true:
+                    
+                                                                                //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                    
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                    
+                                                                                return response()->json([
+                                                    
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                                ]);
+                                                                                 break;
+                                                                            
+                                                                            //rest day regular holiday Night shift
+                                                                            case $data -> RDRHND == true:
+                                                                                
+                                                                                //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                        
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+
+                                                                               
+                                                                                 break;
+                                                                            
+                                                                           
+                                                                    
+                                                                                 default:
+                                                                               
+                                                                              
+                                                                                //Update attendance if yesterday is not holiday 
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours]);
+                    
+                                                                                return response()->json([
+                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                        
+                                                                                ]);
+                    
+                                                                                 break;
+                                                                        }
+
+                                                                     
+                                                                        
+                                                                    }
+                                                                   
+
+
+                                                                }
+                                                                
                                                             }
                                                             //TIME OUT BEFORE BREAK TIME START
                                                             else{
@@ -2737,25 +4710,546 @@ class AttendanceController extends Controller
                                                                 $interval = $timein->diffInSeconds($timeout);
                                                                 $totalDuration = gmdate('H:i:s', $interval);
 
-                                                                 //Minus 1 HR UNDERTIME
+                                                                //Minus 1 HR UNDERTIME
                                                                 $emp_sched_out = Carbon::parse($data ->employee-> sched_end)->addDay(1)->subHour(1);
                                                                 $out_today =Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $sum = $emp_sched_out -> diffInSeconds($out_today);
                                                                 $undertime = gmdate('H:i:s', $sum);
+                                                                
+                                                                foreach($holidays as $holiday){
+                                                                 
+                                                                    $todays_Date = Carbon::today('GMT+8')->format('m-d');
+                                                                    $office_holiday = Carbon::parse($holiday->holiday_date)->format('m-d');
 
-                                                                Attendance::where('emp_no', '=', $request -> scanned)
-                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
-                                                                ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
-                                                                        'work_hours' => $totalDuration,
-                                                                        'undertime_hours' => $undertime,
-                                                                        'night_diff_hours' => $night_diff_total_hours]);
 
-                                                                return response()->json([
+                                                                    if($todays_Date === $office_holiday){
 
-                                                                    'status' => 200,
-                                                                    'msg' => 'Overtime Recorded Successfully',
+                                                                        if($data->RDND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('1');
+                                                                            //REST DAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND' => true,
+                                                                                            'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                    
+                                                                        }
+                                                                        elseif($data->RHND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('2');
+                                                                            //FOR THE RHND 
+                                                                            //ADD the previous holiday which is Regular holiday to toddays holiday which Regular holiday again
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                            
+                                                                            //dd('RHND at Holiday ngayon');
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                      ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                      ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                                        }
+                                                                        elseif($data->RDRHND == true && $holiday->holiday_type == 'Regular'){
+                                                                            // dd('3');
+                                                                            //REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'RHND' => true,
+                                                                                            'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+                                                    
+                                                                        }  
+                                                                        elseif($data->RHND == true && $holiday->holiday_type == 'Special'){
+                                                                           
+                                                                            //REGULAR HOLIDAY YESTERDAY
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
-                                                                ]);
+                                                                            //Special Holiday nextday
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                            'RHND_hours' => $regular_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+
+
+                                                                        }
+                                                                        elseif($data->RDRHND == true && $holiday->holiday_type == 'Special'){
+                                                                             //  dd('ops');
+                                                                             //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                             $time_in = Carbon::parse($data->night_shift_date);
+                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                             $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                             //Special Holiday nextday
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                            'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                    
+                                                                            return response()->json([
+                                                    
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                            ]);
+
+
+                                                                        }
+                                                                        elseif($data->RDND == true && $holiday->holiday_type == 'Special'){
+                                                                            // dd('4');
+                                                                            //REST DAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                                //REGULAR HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                        
+                                                
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                
+                                                
+                                                                        }
+                                                                        elseif($data->SHND == true && $holiday->holiday_type == 'Special'){
+                                                                        
+                                                                             //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                                        
+                                                                        
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                                        elseif($data->RDSHND == true && $holiday->holiday_type == 'Special'){
+                                                                            // dd('6');
+                                                                            //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                            //SPECIAL HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+                                                
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                    ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                    ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                            'work_hours' => $totalDuration,
+                                                                                            'undertime_hours' => $undertime,
+                                                                                            'night_diff_hours' => $night_diff_total_hours,
+                                                                                            'SHND' => true,
+                                                                                            'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                            'SHND_hours' => $special_holiday_hours,
+                                                                                        
+                                                                                        ]);
+                                                
+                                                                            return response()->json([
+                                                
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                                        elseif($data->SHND == true && $holiday->holiday_type == 'Regular'){
+
+                                                                            // dd('1');
+                                                                            //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
+                                                                         
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            //Regular HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'undertime_hours' => $undertime,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND' => true,
+                                                                                    'SHND_hours' => $special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                
+                                                                                ]);
+                                                                        
+                                                                            return response()->json([
+                                            
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+
+                                                                        }
+                                                                        else{
+                                                                            
+                                                                            // $data->RDSHND == true && $holiday->holiday_type == 'Regular'
+                                                                            // dd('2');
+
+                                                                             //FOR THE SHND 
+                                                                            //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
+                                                                            $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                            $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
+
+
+                                                                            //Regular HOLIDAY
+                                                                            $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $timeout = Carbon::parse($out);
+                                                                            $subtract = $timeout->diffInSeconds($start);
+                                                                            $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                            ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                    'work_hours' => $totalDuration,
+                                                                                    'undertime_hours' => $undertime,
+                                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                                    'RHND' => true,
+                                                                                    'RDSHND_hours' => $restday_special_holiday_hours,
+                                                                                    'RHND_hours' => $regular_holiday_hours,
+                                                                                
+                                                                                ]);
+                                                                            return response()->json([
+                                            
+                                                                                'status' => 200,
+                                                                                'msg' => 'Attendance Recorded Successfully',
+                                                
+                                                                            ]);
+                                                                        }
+                                                
+                                                                    }   
+                                                                    else{   
+                                                                      
+                                                                        
+                                                                        #need to use switch case
+                                                                        switch($data){
+                                                                           
+                                                                            //Rest day Night shift
+                                                                            case $data -> RDND == true:
+                                                                            
+                                                                                //REST DAY NIGHT SHIFT
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                        
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDND_hours' => $restday_total_holiday_hours,
+                                                                                            ]);
+                                                        
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+
+                                                                                break;
+                    
+                                                                            //rest day special holiday Night shift
+                                                                            case $data -> SHND == true:
+
+                                                                                //Special Holiday
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $special_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                        'work_hours' => $totalDuration,
+                                                                                        'undertime_hours' => $undertime,
+                                                                                        'night_diff_hours' => $night_diff_total_hours,
+                                                                                        'SHND_hours' => $special_holiday_hours,
+                                                                                    
+                                                                                    ]);
+                                                                            
+                                                                                return response()->json([
+                                                
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                                ]);
+
+                                                                                 break;
+                    
+                                                                            //rest day regular holiday Night shift
+                                                                            case $data -> RHND == true:
+
+                                                                                //REGULAR HOLIDAY YESTERDAY
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $regular_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RHND_hours' => $regular_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                    
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+                                                                                
+                                                                                 break;
+                    
+                                                                            //rest day special holiday Night shift
+                                                                            case $data -> RDSHND == true:
+                    
+                                                                                //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
+                                                    
+                                                    
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDSHND_hours' => $restday_special_total_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                    
+                                                                                return response()->json([
+                                                    
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                    
+                                                                                ]);
+                                                                                 break;
+                                                                            
+                                                                            //rest day regular holiday Night shift
+                                                                            case $data -> RDRHND == true:
+                                                                                
+                                                                                //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
+                                                                                $time_in = Carbon::parse($data->night_shift_date);
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $subtract = $time_in->diffInSeconds($holiday_date);
+                                                                                $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                                                Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                        ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                        ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                'work_hours' => $totalDuration,
+                                                                                                'undertime_hours' => $undertime,
+                                                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                                                'RDRHND_hours' => $restday_regular_total_holiday_hours,
+                                                                                            
+                                                                                            ]);
+                                                        
+                                                                                return response()->json([
+                                                        
+                                                                                    'status' => 200,
+                                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                        
+                                                                                ]);
+
+                                                                               
+                                                                                break;
+                                                                            
+                                                                           
+                                                                    
+                                                                            default:
+                                                                               
+                                                                              
+                                                                                      //Update attendance if yesterday is not holiday 
+                                                                                     Attendance::where('emp_no', '=', $request -> scanned)
+                                                                                            ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
+                                                                                            ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                                    'work_hours' => $totalDuration,
+                                                                                                    'undertime_hours' => $undertime,
+                                                                                                    'night_diff_hours' => $night_diff_total_hours]);
+                        
+                                                                                    return response()->json([
+                            
+                                                                                        'status' => 200,
+                                                                                        'msg' => 'Attendance Recorded Successfully',
+                            
+                                                                                    ]);
+                        
+                                                                             break;
+
+
+                                                                        }
+
+                                                                     
+                                                                        
+                                                                    }
+                                                                   
+
+
+                                                                }
 
         
                                                             }
@@ -2775,13 +5269,34 @@ class AttendanceController extends Controller
                                 }
                                 else if($data -> emp_no == $request -> scanned && $data -> date == Carbon::now('GMT+8')->format('Y-m-d') && $data -> time_out === null){
 
-                              
-                                    try {
+                           
+                                    if( Carbon::now('GMT+8')->format('H:i:s') < $data->employee->sched_start){
 
+                                        $sched_start =  Carbon::parse($data->employee->sched_start);
+                                        $sched_end = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
+                                        $sum = $sched_start->diffInSeconds($sched_end);
+                                        $undertime = gmdate('H:i:s', $sum);
+
+                                        Attendance::where('emp_no', '=', $request->scanned)
+                                            ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                            ->update([
+                                                    'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                    'night_diff_hours' => '00:00:00',
+                                                    'undertime_hours' => $undertime,
+                                                    'work_hours' => '00:00:00',
+                                                ]);
+                                        return response()->json([
+                                            'status' => 200,
+                                            'msg' => 'Attendance updated Successfully',
+                                        ]);
+                                       
+                                    }
+                                    else{
+                                       
+                                 
                                         if ($data->overtime->isApproved_HR == '1') {
 
-                                            //dd('1');
-
+                                         
                                              // IF THE EMPLOYEE TIME OUT / UNDERTIME WITH THE SAME DATE
                                             $emp_sched_out = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
                                             $out_today = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
@@ -2795,8 +5310,6 @@ class AttendanceController extends Controller
                                             $totalDuration = gmdate('H:i:s', $interval);
 
                                             
-                                           
-
                                             if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s')){
 
                                                 //dd('1');
@@ -2830,9 +5343,6 @@ class AttendanceController extends Controller
                                             }
                                             else
                                             {
-
-
-                                                //dd('2');
                                                  // NIGHT DIFFERENTIAL HOURS
                                                 $start = Carbon::createFromFormat('H:i:s', '22:00:00'); // 10pm
                                                 $end = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
@@ -2841,15 +5351,15 @@ class AttendanceController extends Controller
                                             }
 
 
-
+                                            //FOR THE OVERTIME
                                             switch($data){
 
-                                                //Rest Day Night diff
+                                                //Rest day Night diff
                                                 case $data -> RDND == true:
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'RDOT' => true]);
                                                 break;
 
@@ -2858,16 +5368,16 @@ class AttendanceController extends Controller
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'SHOT' => true]);
                                                 break;
 
-                                                    //rest day regular holiday Night diff
+                                                    //rest day regular holiday
                                                     case $data -> RHND == true:
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'RHOT' => true]);
                                                 break;
 
@@ -2876,7 +5386,7 @@ class AttendanceController extends Controller
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'RDSHOT' => true]);
                                                 break;
                                                 
@@ -2885,33 +5395,166 @@ class AttendanceController extends Controller
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                      'RDRHOT' => true]);
                                                 break;
                                                 
                                                 default:
                                                      Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime]);
+                                                            ->update(['hours_OT' => '00:00:00']);
 
                                                 break;
                                             }
 
 
-                                            // UPDATE THE ATTENDANCE
-                                            Attendance::where('emp_no', '=', $request->scanned)
-                                                ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
-                                                ->update([
-                                                    'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
-                                                    'night_diff_hours' => $night_diff_total_hours,
-                                                    'undertime_hours' => $undertime,
-                                                    'work_hours' => $totalDuration
-                                                ]);
+                                            //COMPUTE HOURS OF HOLIDAY IN NIGHT SHIFT BUT IF NOT HOLIDAY OR RESTDAY THEY WILL UPDATE IN THE DEFAULT OF SWITCH
+                                            switch ($data) {
 
-                                            return response()->json([
-                                                'status' => 200,
-                                                'msg' => 'Attendance updated Successfully',
-                                            ]);
+                                                #REST DAY NIGHT SHIFT
+                                                case $data->RDND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                   break;
+
+                                                #SPECIAL HOLIDAY NIGHT SHIFT
+                                                case $data->SHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'SHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                   break;
+                                                
+                                                #REGULAR HOLIDAY NIGHT SHIFT
+                                                case $data->RHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+
+                                                
+                                                #REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                case $data->RDSHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDSHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+                                                
+                                                #REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                case $data->RDRHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDRHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+
+                                               
+                                                #IN DEFAULT IT WILL UPDATE THE ATTENDANCE
+                                                default:
+
+                                                    
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                            ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                            ->update([
+                                                                    'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                    'undertime_hours' => $undertime,
+                                                                    'work_hours' => $totalDuration
+                                                                ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+
+                                                break;
+                                            }
+
+                                            
 
                                         }
                                         elseif ($data->overtime->isApproved_HR == '0')
@@ -2930,28 +5573,9 @@ class AttendanceController extends Controller
                                             $interval = $startTime->diffInSeconds($endTime);
                                             $totalDuration = gmdate('H:i:s', $interval);
 
-                                            // if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s')){
+                                            
 
-                                            //     //dd('1');
-                                            //     // NIGHT DIFFERENTIAL HOURS
-                                            //     $start = Carbon::parse($data->night_shift_date);
-                                            //     $end = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                            //     $diff = $start->diffInSeconds($end);
-                                            //     $night_diff_total_hours = gmdate('H:i:s', $diff);   
-
-                                            // }
-                                            // else{
-
-
-                                            //     //dd('2');
-                                            //      // NIGHT DIFFERENTIAL HOURS
-                                            //     $start = Carbon::createFromFormat('H:i:s', '22:00:00'); // 10pm
-                                            //     $end = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                            //     $diff = $start->diffInSeconds($end);
-                                            //     $night_diff_total_hours = gmdate('H:i:s', $diff);
-                                            // }
-
-                                             if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s')){
+                                            if(Carbon::parse($data -> night_shift_date)->format('H:i:s') > Carbon::parse('22:00:00')->format('H:i:s')){
 
                                                 //dd('1');
                                                 // NIGHT DIFFERENTIAL HOURS
@@ -2994,15 +5618,15 @@ class AttendanceController extends Controller
                                             }
 
                                            
-
+                                            //THIS IS FOR THE OVERTIME
                                             switch($data){
 
-                                                //Rest Day Night diff
+                                                //Rest day Night diff
                                                 case $data -> RDND == true:
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'RDOT' => true]);
                                                 break;
 
@@ -3011,16 +5635,16 @@ class AttendanceController extends Controller
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'SHOT' => true]);
                                                 break;
 
-                                                    //rest day regular holiday Night diff
-                                                    case $data -> RHND == true:
+                                                //rest day regular holiday
+                                                case $data -> RHND == true:
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'RHOT' => true]);
                                                 break;
 
@@ -3029,7 +5653,7 @@ class AttendanceController extends Controller
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                       'RDSHOT' => true]);
                                                 break;
                                                 
@@ -3038,36 +5662,168 @@ class AttendanceController extends Controller
 
                                                     Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime,
+                                                            ->update(['hours_OT' => '00:00:00',
                                                                      'RDRHOT' => true]);
                                                 break;
                                                 
                                                 default:
                                                      Overtime::where('emp_number', '=', $request -> scanned)
                                                             ->where('attendance_id', '=', $data -> id)
-                                                            ->update(['hours_OT' => $total_overtime]);
+                                                            ->update(['hours_OT' => '00:00:00']);
 
                                                 break;
                                             }
 
+                                            //COMPUTE HOURS OF HOLIDAY IN NIGHT SHIFT BUT IF NOT HOLIDAY OR RESTDAY THEY WILL UPDATE IN THE DEFAULT OF SWITCH
+                                            switch ($data) {
 
-                                                // UPDATE THE ATTENDANCE
-                                                Attendance::where('emp_no', '=', $request->scanned)
-                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
-                                                    ->update([
-                                                        'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
-                                                        'night_diff_hours' => $night_diff_total_hours,
-                                                        'undertime_hours' => $undertime,
-                                                        'work_hours' => $totalDuration
+                                                #REST DAY NIGHT SHIFT
+                                                case $data->RDND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
                                                     ]);
 
-                                                return response()->json([
-                                                    'status' => 200,
-                                                    'msg' => 'Attendance updated Successfully',
-                                                ]);
+                                                   break;
+
+                                                #SPECIAL HOLIDAY NIGHT SHIFT
+                                                case $data->SHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'SHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                   break;
+                                                
+                                                #REGULAR HOLIDAY NIGHT SHIFT
+                                                case $data->RHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+
+                                                
+                                                #REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                case $data->RDSHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDSHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+                                                
+                                                #REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                case $data->RDRHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDRHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+
+                                               
+                                                #IN DEFAULT IT WILL UPDATE THE ATTENDANCE
+                                                default:
+
+                                                    
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                            ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                            ->update([
+                                                                    'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                    'undertime_hours' => $undertime,
+                                                                    'work_hours' => $totalDuration
+                                                                ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+
+                                                break;
+                                            }
+
                                         }
                                         else
                                         {
+                                            
 
                                             // IF THE EMPLOYEE TIME OUT / UNDERTIME WITH THE SAME DATE
                                             $emp_sched_out = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
@@ -3115,295 +5871,333 @@ class AttendanceController extends Controller
                                             else
                                             {
 
-
-                                                //dd('2');
-                                                 // NIGHT DIFFERENTIAL HOURS
+                                                // NIGHT DIFFERENTIAL HOURS
                                                 $start = Carbon::createFromFormat('H:i:s', '22:00:00'); // 10pm
                                                 $end = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                 $diff = $start->diffInSeconds($end);
                                                 $night_diff_total_hours = gmdate('H:i:s', $diff);
                                             }
 
-                                            // UPDATE THE ATTENDANCE
-                                            Attendance::where('emp_no', '=', $request->scanned)
-                                                ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
-                                                ->update([
-                                                    'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
-                                                    'night_diff_hours' => $night_diff_total_hours,
-                                                    'undertime_hours' => $undertime,
-                                                    'work_hours' => $totalDuration
-                                                ]);
+                                            //COMPUTE HOURS OF HOLIDAY IN NIGHT SHIFT BUT IF NOT HOLIDAY OR RESTDAY 
+                                            //THEY WILL UPDATE IN THE DEFAULT OF SWITCH
+                                            switch ($data) {
 
-                                            return response()->json([
-                                                'status' => 200,
-                                                'msg' => 'Attendance updated Successfully',
-                                            ]);
+                                                #REST DAY NIGHT SHIFT
+                                                case $data->RDND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                   break;
+
+                                                #SPECIAL HOLIDAY NIGHT SHIFT
+                                                case $data->SHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'SHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                   break;
+                                                
+                                                #REGULAR HOLIDAY NIGHT SHIFT
+                                                case $data->RHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+
+                                                
+                                                #REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                case $data->RDSHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDSHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+                                                
+                                                #REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                case $data->RDRHND == true:
+                                                    
+                                                    $time_in = Carbon::parse($data->night_shift_date);
+                                                    $time_out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                    $subtract = $time_in->diffInSeconds($time_out);
+                                                    $total_holiday_hours = gmdate('H:i:s', $subtract);
+
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                          ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                          ->update([
+                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                'night_diff_hours' => $night_diff_total_hours,
+                                                                'undertime_hours' => $undertime,
+                                                                'work_hours' => $totalDuration,
+                                                                'RDRHND_hours' => $total_holiday_hours,
+                                                            ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+                                                    break;
+
+                                               
+                                                #IN DEFAULT IT WILL UPDATE THE ATTENDANCE
+                                                default:
+
+                                                    
+                                                    Attendance::where('emp_no', '=', $request->scanned)
+                                                            ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                            ->update([
+                                                                    'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                    'night_diff_hours' => $night_diff_total_hours,
+                                                                    'undertime_hours' => $undertime,
+                                                                    'work_hours' => $totalDuration
+                                                                ]);
+                                                    return response()->json([
+                                                        'status' => 200,
+                                                        'msg' => 'Attendance updated Successfully',
+                                                    ]);
+
+
+                                                break;
+                                            }
+                                           
                                         }
-
-                                    } 
-                                    catch (\Exception $e) {
-                                        // Handle the exception here
-                                        return response()->json([
-                                            'status' => 500,
-                                            'error' => $e->getMessage(),
-                                        ]);
+                                       
                                     }
-
-                                  
                                    
-
                                 }
-                                
                                 else
                                 {
-                                   
+                                    $Check_Attendance = Attendance::with('overtime')->where('emp_no', $request -> scanned)
+                                                                   ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                  ->first();
 
-                                        // dd(1);
-                                        
-                                    //IF THE EMPLOYEE COMPLETE TIME IN AND OUT 
-                                    //ATTENDANCE AGAIN IN THE SAME DAY WHICH IS FOR NIGHT SHIFT ONLY
-                                    if($data -> emp_no == $request -> scanned && $data -> date == Carbon::now('GMT+8')->subDay(1)->format('Y-m-d') && $data -> time_out != null){
+                                       
+                                    //CHECK IF THE EMPLOYEE HAS ATTENDANCE IN TODAYS DATE
+                                    if (!$Check_Attendance) {
 
-                                        
-                                        foreach($schedules as $sched){
+                                       
+                                        //IF THE EMPLOYEE COMPLETE TIME IN AND OUT 
+                                        //ATTENDANCE AGAIN IN THE SAME DAY WHICH IS FOR NIGHT SHIFT ONLY
+                                        if($data -> emp_no == $request -> scanned && $data -> date == Carbon::now('GMT+8')->subDay(1)->format('Y-m-d') && $data -> time_out != null){
 
-                                            foreach ($holidays as $holiday) {
-                                                
-                                                $currentDate = Carbon::today('GMT+8')->format('m-d');
-                                                $holidayDate = Carbon::parse($holiday->holiday_date)->format('m-d');
+                                            
+                                            foreach($schedules as $sched){
 
-                                                if ($currentDate === $holidayDate && $holiday->holiday_type === 'Regular') {
+                                                foreach ($holidays as $holiday) {
+                                                    
+                                                    $currentDate = Carbon::today('GMT+8')->format('m-d');
+                                                    $holidayDate = Carbon::parse($holiday->holiday_date)->format('m-d');
 
-
-                                                    //if rest day nila then  regular holiday pa then night shift
-                                                    //RDRH
-                                                    if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
-
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-                                                            $emp_sched = Carbon::parse($sched -> sched_start);
-                                                            $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+                                                    if ($currentDate === $holidayDate && $holiday->holiday_type === 'Regular') {
 
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = $sched -> sched_start;
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                            $employee_attendance -> RDRHND = true;
-                                                            $employee_attendance -> save();
+                                                        //if rest day nila then  regular holiday pa then night shift
+                                                        //RDRH
+                                                        if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
-                                                            return response()->json([
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> RDRHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> RDRHND = true;
-
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-
-                                                    }
-                                                    else
-                                                    {
-
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-
-                                                            
                                                                 $emp_sched = Carbon::parse($sched -> sched_start);
                                                                 $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-                                                                
 
                                                                 $employee_attendance = new Attendance();
                                                                 $employee_attendance -> emp_no = $request -> scanned;
                                                                 $employee_attendance -> time_in = $sched -> sched_start;
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                                $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> RDRHND = true;
                                                                 $employee_attendance -> save();
-
-                                                                dd($employee_attendance);
-
 
                                                                 return response()->json([
 
                                                                     'status' => 200,
                                                                     'msg' => 'Attendance Recorded Successfully',
                                                                 ]);
+
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> RDRHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> RDRHND = true;
+
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+
                                                         }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+                                                        else
+                                                        {
+
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
 
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
+                                                                
+                                                                    $emp_sched = Carbon::parse($sched -> sched_start);
+                                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+                                                                    
+
+                                                                    $employee_attendance = new Attendance();
+                                                                    $employee_attendance -> emp_no = $request -> scanned;
+                                                                    $employee_attendance -> time_in = $sched -> sched_start;
+                                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                                    $employee_attendance -> RHND = true;
+                                                                    $employee_attendance -> save();
+                                                                    return response()->json([
+
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                                                    ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
 
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> RHND = true;
-                                                            $employee_attendance -> save();
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
 
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+
                                                         }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> RHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
 
                                                     }
 
+                                                    #Rest Day then Special holiday
+                                                    else if ($currentDate === $holidayDate && $holiday->holiday_type === 'Special') {
 
-                                                }
-
-                                                #Rest Day then Special holiday
-                                                else if ($currentDate === $holidayDate && $holiday->holiday_type === 'Special') {
-
-                                                    # dd("regular special niyan");
+                                                        # dd("regular special niyan");
 
                                                         if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-
-                                                            // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            // $emp_sched = Carbon::parse($sched -> sched_start);
-                                                            // $interval = $emp_sched->diffInSeconds($datetimetoday);
-                                                            // $total = gmdate('H:i:s', $interval); //minus
-
-                                                            // $time2 = Carbon::parse($total);
-                                                            // $datetimenow = Carbon::now('GMT+8')->format('Y-m-d H:i:s'); //carbon now
-                                                            // $convert = Carbon::parse($datetimenow);
-
-                                                            // //add the subtrcated hour or minus to the current time and date
-                                                            // $sum = $convert->add($time2->diffInHours('00:00:00'), 'hours')
-                                                            //                 ->add($time2->diffInMinutes('00:00:00') % 60, 'minutes')
-                                                            //                 ->add($time2->diffInSeconds('00:00:00') % 60, 'seconds');
-
-                                                            // $sum->format('Y-m-d H:i:s');
-                                                            $emp_sched = Carbon::parse($sched -> sched_start);
-                                                            $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = $sched -> sched_start;
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                            $employee_attendance -> RDSHND = true;
-                                                            $employee_attendance -> save();
-
-
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> RDSHND = true;
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> RDSHND = true;
-
-                                                            $employee_attendance -> save();
-
-                                                            return response()->json([
-
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-
-                                                    }
-                                                    else
-                                                    {
-
-                                                        if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
 
                                                                 // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
@@ -3424,11 +6218,131 @@ class AttendanceController extends Controller
                                                                 $emp_sched = Carbon::parse($sched -> sched_start);
                                                                 $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
 
+
                                                                 $employee_attendance = new Attendance();
                                                                 $employee_attendance -> emp_no = $request -> scanned;
                                                                 $employee_attendance -> time_in = $sched -> sched_start;
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                                $employee_attendance -> RDSHND = true;
+                                                                $employee_attendance -> save();
+
+
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> RDSHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> RDSHND = true;
+
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+
+                                                            if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
+
+
+                                                                    // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                    // $emp_sched = Carbon::parse($sched -> sched_start);
+                                                                    // $interval = $emp_sched->diffInSeconds($datetimetoday);
+                                                                    // $total = gmdate('H:i:s', $interval); //minus
+
+                                                                    // $time2 = Carbon::parse($total);
+                                                                    // $datetimenow = Carbon::now('GMT+8')->format('Y-m-d H:i:s'); //carbon now
+                                                                    // $convert = Carbon::parse($datetimenow);
+
+                                                                    // //add the subtrcated hour or minus to the current time and date
+                                                                    // $sum = $convert->add($time2->diffInHours('00:00:00'), 'hours')
+                                                                    //                 ->add($time2->diffInMinutes('00:00:00') % 60, 'minutes')
+                                                                    //                 ->add($time2->diffInSeconds('00:00:00') % 60, 'seconds');
+
+                                                                    // $sum->format('Y-m-d H:i:s');
+                                                                    $emp_sched = Carbon::parse($sched -> sched_start);
+                                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+
+                                                                    $employee_attendance = new Attendance();
+                                                                    $employee_attendance -> emp_no = $request -> scanned;
+                                                                    $employee_attendance -> time_in = $sched -> sched_start;
+                                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                                    $employee_attendance -> SHND = true;
+                                                                    $employee_attendance -> save();
+
+                                                                    return response()->json([
+
+                                                                        'status' => 200,
+                                                                        'msg' => 'Attendance Recorded Successfully',
+                                                                    ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                                $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $sched_in = Carbon::parse($sched -> sched_start);
+                                                                $interval = $sched_in->diffInSeconds($timein);
+                                                                $total_late = gmdate('H:i:s', $interval);
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                                $employee_attendance -> late_hours = $total_late;
+                                                                $employee_attendance -> SHND = true;
+                                                                $employee_attendance -> save();
+
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance Recorded Successfully',
+                                                                ]);
+                                                            }
+                                                            else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                                $employee_attendance = new Attendance();
+                                                                $employee_attendance -> emp_no = $request -> scanned;
+                                                                $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                                $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                                $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> SHND = true;
                                                                 $employee_attendance -> save();
 
@@ -3437,206 +6351,698 @@ class AttendanceController extends Controller
                                                                     'status' => 200,
                                                                     'msg' => 'Attendance Recorded Successfully',
                                                                 ]);
+                                                            }
+
                                                         }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+                                                    }
+
+                                                }
 
 
-                                                            $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $sched_in = Carbon::parse($sched -> sched_start);
-                                                            $interval = $sched_in->diffInSeconds($timein);
-                                                            $total_late = gmdate('H:i:s', $interval);
+                                                #REST DAY
+                                                if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> late_hours = $total_late;
-                                                            $employee_attendance -> SHND = true;
-                                                            $employee_attendance -> save();
+                                                    if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
-                                                            return response()->json([
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
-                                                        }
-                                                        else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+                                                        $emp_sched = Carbon::parse($sched -> sched_start);
+                                                        $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
 
-                                                            $employee_attendance = new Attendance();
-                                                            $employee_attendance -> emp_no = $request -> scanned;
-                                                            $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                            $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                            $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                            $employee_attendance -> SHND = true;
-                                                            $employee_attendance -> save();
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = $sched -> sched_start;
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                        $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> save();
 
-                                                            return response()->json([
+                                                        return response()->json([
 
-                                                                'status' => 200,
-                                                                'msg' => 'Attendance Recorded Successfully',
-                                                            ]);
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                        $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $sched_in = Carbon::parse($sched -> sched_start);
+                                                        $interval = $sched_in->diffInSeconds($timein);
+                                                        $total_late = gmdate('H:i:s', $interval);
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                        $employee_attendance -> late_hours = $total_late;
+                                                            $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                        $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+
+                                                }
+                                                else
+                                                {
+
+                                                    
+                                                    if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
+
+
+                                                        $emp_sched = Carbon::parse($sched -> sched_start);
+                                                        $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = $sched -> sched_start;
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
+
+
+                                                        $timein = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $sched_in = Carbon::parse($sched -> sched_start);
+                                                        $interval = $sched_in->diffInSeconds($timein);
+                                                        $total_late = gmdate('H:i:s', $interval);
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+                                                        $employee_attendance -> late_hours = $total_late;
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+                                                    else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
+
+                                                        $employee_attendance = new Attendance();
+                                                        $employee_attendance -> emp_no = $request -> scanned;
+                                                        $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
+                                                        $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
+                                                        $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
+
+                                                        $employee_attendance -> save();
+
+                                                        return response()->json([
+
+                                                            'status' => 200,
+                                                            'msg' => 'Attendance Recorded Successfully',
+                                                        ]);
+                                                    }
+
+                                                }      
+                                                
+                                            }
+
+                                        }
+
+
+                                    }
+                                    else{
+
+                                            $timeout_again = Attendance::where('emp_no', $request -> scanned)
+                                                                        ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->where('time_in', '!=', Null)
+                                                                        ->where('time_out', '!=', Null)
+                                                                        ->first();
+
+                                                                   
+                                            if($timeout_again){
+
+                                                //CHECK IF THE TIME IN AND OUT ARE COMPLETED FOR TODAYS DATE        
+
+                                                return response()->json([
+                                                    'status' => 0,
+                                                    'msg' => 'Already Clocked Out',
+                                                ]);
+                                            }
+                                            else{
+
+                                                 //RECORD TIME OUT OF THE EMPLOYEE IN TODAYS DATE
+                                                if (Carbon::now('GMT+8')->format('H:i:s') <= $data->employee->sched_start) {
+
+                                                    // IF THE EMPLOYEE TIME OUT / UNDERTIME WITH THE SAME DATE
+                                                    
+
+                                                    $overtime_approved_HR = Overtime::where('emp_number', $request -> scanned)
+                                                                                ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                                ->where('isApproved_HR', '1')
+                                                                                ->first();
+
+                                                    $overtime_Not_approved_HR = Overtime::where('emp_number', $request -> scanned)
+                                                                                ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                                ->where('isApproved_HR', '0')
+                                                                                ->first();
+    
+                                                    
+
+                                                    if($overtime_approved_HR){
+
+                                                        //dd('1');
+                                                        $sched_start =  Carbon::parse($data->employee->sched_start);
+                                                        $sched_end = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
+                                                        $sum = $sched_start->diffInSeconds($sched_end);
+                                                        $undertime = gmdate('H:i:s', $sum);
+                                                        
+                                                        //FOR THE OVERTIME
+                                                        switch($data){
+
+                                                            //Rest day Night diff
+                                                            case $data -> RDND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                         ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'RDOT' => true]);
+                                                            break;
+            
+                                                            //rest day special holiday Night diff
+                                                            case $data -> SHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                           ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'SHOT' => true]);
+                                                            break;
+            
+                                                                //rest day regular holiday
+                                                                case $data -> RHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                         ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'RHOT' => true]);
+                                                            break;
+            
+                                                            //rest day special holiday Night diff
+                                                            case $data -> RDSHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                         ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'RDSHOT' => true]);
+                                                            break;
+                                                            
+                                                            //rest day regular holiday Night diff
+                                                            case $data -> RDRHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                        ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                 'RDRHOT' => true]);
+                                                            break;
+                                                            
+                                                            default:
+                                                          
+                                                                 Overtime::where('emp_number', '=', $request -> scanned)
+                                                                          ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                         ->update(['hours_OT' => '00:00:00']);
+                                                                      
+                                                            break;
+                                                        }  
+                                                        
+
+                                                        //THEY WILL UPDATE IN THE DEFAULT OF SWITCH
+                                                        switch ($data) {
+
+                                                            #REST DAY NIGHT SHIFT
+                                                            case $data->RDND == true:
+
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                            break;
+
+                                                            #SPECIAL HOLIDAY NIGHT SHIFT
+                                                            case $data->SHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'SHND_hours' =>  '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                            break;
+                                                            
+                                                            #REGULAR HOLIDAY NIGHT SHIFT
+                                                            case $data->RHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+
+                                                            
+                                                            #REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                            case $data->RDSHND == true:
+
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDSHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+                                                            
+                                                            #REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                            case $data->RDRHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDRHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+
+                                                        
+                                                            #IN DEFAULT IT WILL UPDATE THE ATTENDANCE
+                                                            default:
+
+                                                                
+                                                               Attendance::where('emp_no', '=', $request->scanned)
+                                                                        ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update([
+                                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                'night_diff_hours' => '00:00:00',
+                                                                                'undertime_hours' => $undertime,
+                                                                                'work_hours' => '00:00:00',
+                                                                            ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+
+                                                            break;
                                                         }
 
                                                     }
+                                                    else if($overtime_Not_approved_HR){
+
+                                                     
+                                                        $sched_start =  Carbon::parse($data->employee->sched_start);
+                                                        $sched_end = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
+                                                        $sum = $sched_start->diffInSeconds($sched_end);
+                                                        $undertime = gmdate('H:i:s', $sum);
+                                                        
+                                                        //OVERTIME
+                                                        switch($data){
+
+                                                            //Rest day Night diff
+                                                            case $data -> RDND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                         ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'RDOT' => true]);
+                                                            break;
+            
+                                                            //rest day special holiday Night diff
+                                                            case $data -> SHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                           ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'SHOT' => true]);
+                                                            break;
+            
+                                                                //rest day regular holiday
+                                                                case $data -> RHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                         ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'RHOT' => true]);
+                                                            break;
+            
+                                                            //rest day special holiday Night diff
+                                                            case $data -> RDSHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                         ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                  'RDSHOT' => true]);
+                                                            break;
+                                                            
+                                                            //rest day regular holiday Night diff
+                                                            case $data -> RDRHND == true:
+            
+                                                                Overtime::where('emp_number', '=', $request -> scanned)
+                                                                        ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update(['hours_OT' => '00:00:00',
+                                                                                 'RDRHOT' => true]);
+                                                            break;
+                                                            
+                                                            default:
+                                                          
+                                                                 Overtime::where('emp_number', '=', $request -> scanned)
+                                                                          ->whereDate('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                         ->update(['hours_OT' => '00:00:00']);
+                                                                      
+                                                            break;
+                                                        }  
+                                                     
+                                                        //THEY WILL UPDATE IN THE DEFAULT OF SWITCH
+                                                        switch ($data) {
+
+                                                            #REST DAY NIGHT SHIFT
+                                                            case $data->RDND == true:
+
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                            break;
+
+                                                            #SPECIAL HOLIDAY NIGHT SHIFT
+                                                            case $data->SHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'SHND_hours' =>  '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                            break;
+                                                            
+                                                            #REGULAR HOLIDAY NIGHT SHIFT
+                                                            case $data->RHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+
+                                                            
+                                                            #REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                            case $data->RDSHND == true:
+
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDSHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+                                                            
+                                                            #REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                            case $data->RDRHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDRHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+
+                                                        
+                                                            #IN DEFAULT IT WILL UPDATE THE ATTENDANCE
+                                                            default:
+
+                                                                
+                                                               Attendance::where('emp_no', '=', $request->scanned)
+                                                                        ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update([
+                                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                'night_diff_hours' => '00:00:00',
+                                                                                'undertime_hours' => $undertime,
+                                                                                'work_hours' => '00:00:00',
+                                                                            ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+
+                                                            break;
+                                                        }
+
+                                                    }
+                                                    else{
+                                                       
+                                                      //  dd('e1se');
+                                                        $sched_start =  Carbon::parse($data->employee->sched_start);
+                                                        $sched_end = Carbon::parse($data->employee->sched_end)->subHour(1)->addDay(1);
+                                                        $sum = $sched_start->diffInSeconds($sched_end);
+                                                        $undertime = gmdate('H:i:s', $sum);
+            
+                                                        //THEY WILL UPDATE IN THE DEFAULT OF SWITCH
+                                                        switch ($data) {
+
+                                                            #REST DAY NIGHT SHIFT
+                                                            case $data->RDND == true:
+
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                            break;
+
+                                                            #SPECIAL HOLIDAY NIGHT SHIFT
+                                                            case $data->SHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'SHND_hours' =>  '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                            break;
+                                                            
+                                                            #REGULAR HOLIDAY NIGHT SHIFT
+                                                            case $data->RHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+
+                                                            
+                                                            #REST DAY SPECIAL HOLIDAY NIGHT SHIFT
+                                                            case $data->RDSHND == true:
+
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDSHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+                                                            
+                                                            #REST DAY REGULAR HOLIDAY NIGHT SHIFT
+                                                            case $data->RDRHND == true:
+                                                                
+                                                                Attendance::where('emp_no', '=', $request->scanned)
+                                                                    ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                    ->update([
+                                                                            'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                            'night_diff_hours' => '00:00:00',
+                                                                            'undertime_hours' => $undertime,
+                                                                            'work_hours' => '00:00:00',
+                                                                            'RDRHND_hours' => '00:00:00',
+                                                                        ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+                                                                break;
+
+                                                        
+                                                            #IN DEFAULT IT WILL UPDATE THE ATTENDANCE
+                                                            default:
+                                                               Attendance::where('emp_no', '=', $request->scanned)
+                                                                        ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                        ->update([
+                                                                                'time_out' => Carbon::now('GMT+8')->format('H:i:s'),
+                                                                                'night_diff_hours' => '00:00:00',
+                                                                                'undertime_hours' => $undertime,
+                                                                                'work_hours' => '00:00:00',
+                                                                            ]);
+                                                                return response()->json([
+                                                                    'status' => 200,
+                                                                    'msg' => 'Attendance updated Successfully',
+                                                                ]);
+
+
+                                                            break;
+                                                        }
+  
+                                                    }
+  
                                                 }
-
-                                            }
-
-
-                                            #REST DAY
-                                            if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
-
-                                                if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
 
                                                 
-                                                    $emp_sched = Carbon::parse($sched -> sched_start);
-                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = $sched -> sched_start;
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-                                                    $employee_attendance -> RDND = true;
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                    $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $sched_in = Carbon::parse($sched -> sched_start);
-                                                    $interval = $sched_in->diffInSeconds($timein);
-                                                    $total_late = gmdate('H:i:s', $interval);
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                    $employee_attendance -> late_hours = $total_late;
-                                                        $employee_attendance -> RDND = true;
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                    $employee_attendance -> RDND = true;
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-
                                             }
-                                            else
-                                            {
-
-                                                
-                                                if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-                                                    
-
-                                                    $emp_sched = Carbon::parse($sched -> sched_start);
-                                                    $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = $sched -> sched_start;
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
-
-                                                    // if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
-
-                                                    //    $employee_attendance -> RDND = true;
-                                                    // }
-
-                                                    $employee_attendance -> save();
-
-
-
-                                                    return response()->json([
-
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') > $sched -> sched_start){
-
-
-                                                    $timein = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $sched_in = Carbon::parse($sched -> sched_start);
-                                                    $interval = $sched_in->diffInSeconds($timein);
-                                                    $total_late = gmdate('H:i:s', $interval);
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                    $employee_attendance -> late_hours = $total_late;
-
-                                                    // if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
-
-                                                    //    $employee_attendance -> RDND = true;
-                                                    // }
-
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-                                                else if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') == $sched -> sched_start){
-
-                                                    $employee_attendance = new Attendance();
-                                                    $employee_attendance -> emp_no = $request -> scanned;
-                                                    $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
-                                                    $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
-                                                    $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-
-                                                    $employee_attendance -> save();
-
-                                                    return response()->json([
-
-                                                        'status' => 200,
-                                                        'msg' => 'Attendance Recorded Successfully',
-                                                    ]);
-                                                }
-
-                                            }      
-                                            
-                                        }
 
                                     }
-                                    
-                                     
+     
                                 }
                
                         }
-
-                     // dd('MAIN INSERT');
-
+                        
                         //FOR THE INSERT OF THE ATTENDANCE OF EMPLOYEE
                         foreach($schedules as $sched){
 
@@ -3653,9 +7059,6 @@ class AttendanceController extends Controller
                                     if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
                                         if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
-
-
-                                         
 
                                             $emp_sched = Carbon::parse($sched -> sched_start);
                                             $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
@@ -3722,7 +7125,6 @@ class AttendanceController extends Controller
 
                                         if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
-
                                             
                                                 $emp_sched = Carbon::parse($sched -> sched_start);
                                                 $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
@@ -3735,9 +7137,6 @@ class AttendanceController extends Controller
                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                                 $employee_attendance -> RHND = true;
                                                 $employee_attendance -> save();
-
-                                              
-
 
                                                 return response()->json([
 
@@ -3966,22 +7365,6 @@ class AttendanceController extends Controller
 
                                 if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
-
-                                    // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                    // $emp_sched = Carbon::parse($sched -> sched_start);
-                                    // $interval = $emp_sched->diffInSeconds($datetimetoday);
-                                    // $total = gmdate('H:i:s', $interval); //minus
-
-                                    // $time2 = Carbon::parse($total);
-                                    // $datetimenow = Carbon::now('GMT+8')->format('Y-m-d H:i:s'); //carbon now
-                                    // $convert = Carbon::parse($datetimenow);
-
-                                    // //add the subtrcated hour or minus to the current time and date
-                                    // $sum = $convert->add($time2->diffInHours('00:00:00'), 'hours')
-                                    //                 ->add($time2->diffInMinutes('00:00:00') % 60, 'minutes')
-                                    //                 ->add($time2->diffInSeconds('00:00:00') % 60, 'seconds');
-
-                                    // $sum->format('Y-m-d H:i:s');
                                     $emp_sched = Carbon::parse($sched -> sched_start);
                                     $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
 
@@ -4080,6 +7463,7 @@ class AttendanceController extends Controller
                                     $interval = $sched_in->diffInSeconds($timein);
                                     $total_late = gmdate('H:i:s', $interval);
 
+                                 
                                     $employee_attendance = new Attendance();
                                     $employee_attendance -> emp_no = $request -> scanned;
                                     $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
@@ -4208,7 +7592,7 @@ class AttendanceController extends Controller
                 $employee_absent_onleave -> date = Carbon::now('GMT+8')->format('Y-m-d');
                 $employee_absent_onleave -> save();
 
-                dd($employee_absent_onleave);
+              //  dd($employee_absent_onleave);
                 return response()->json([
 
                     'status' => 200,
@@ -4222,7 +7606,7 @@ class AttendanceController extends Controller
             $employee_absent_onleave -> date = Carbon::now('GMT+8')->format('Y-m-d');
             $employee_absent_onleave -> save();
 
-            dd($employee_absent_onleave);
+           // dd($employee_absent_onleave);
             return response()->json([
 
                 'status' => 200,
@@ -4300,6 +7684,7 @@ class AttendanceController extends Controller
 		}
     }
 }
+
 
 
 

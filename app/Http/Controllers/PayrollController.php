@@ -51,6 +51,8 @@ class PayrollController extends Controller
             // 'allowance' => 'required',
             'pay_date' => 'required',
             'cash_advance' => 'required',
+            'add_adjustment' => 'required',
+            'deduct_adjustment' => 'required',
             // 'special_day' => 'required',
             // 'regular_day' => 'required',
 
@@ -166,6 +168,7 @@ class PayrollController extends Controller
             $SH_total_work_hour = gmDate("H", $SH_work_hrs); // Convert sec to formatted Hour Min Sec
             $SH_min = gmDate("i", $SH_work_hrs);
 
+           
             //Regular holiday
             $RH_work_hrs = DB::table('attendances')
                             ->where('emp_no', '=', $request -> employee_number)
@@ -194,6 +197,8 @@ class PayrollController extends Controller
                                     ->sum(DB::raw("TIME_TO_SEC(late_hours)")); // Calcuting the total hours and convert it to seconds
             $total_latehours = gmDate("H", $employee_latehours); // Convert sec to formatted Hour Min Sec
             $late_min = gmDate("i", $employee_latehours);
+       
+       
             //Undertime
             $employee_undertime = DB::table('attendances')
                                 ->where('emp_no', '=', $request -> employee_number)
@@ -220,8 +225,9 @@ class PayrollController extends Controller
                         ->where('status', '=', 'absent')
                         ->count();
 
-                                
-            
+
+          
+    
             // Normal Overtime
             $employee_OT = DB::table('overtimes')
                             ->where('emp_number', '=', $request -> employee_number)
@@ -255,6 +261,7 @@ class PayrollController extends Controller
                     ->sum(DB::raw("TIME_TO_SEC(hours_OT)")); // Calcuting the total hours and convert it to seconds
             $RDOT_hrs = gmDate("H", $RDOT); // Convert sec to formatted Hour Min Sec
 
+          
             //Special holiday Overtime
             $SHOT = DB::table('overtimes')
                     ->where('emp_number', '=', $request -> employee_number)
@@ -321,13 +328,115 @@ class PayrollController extends Controller
                     ->sum(DB::raw("TIME_TO_SEC(hours_OT)")); // Calcuting the total hours and convert it to seconds
             $RDRHOT_hrs = gmDate("H", $RDRHOT);
             
-
+                
             
-           if($request -> schedule_shift == 'Day'){
+
+            //Restday Night Shift
+            $RDND = DB::table('attendances')
+                        ->where('emp_no', '=', $request -> employee_number)
+                        ->where('RD', false)
+                        ->where('RDSH', false)
+                        ->where('RDRH', false)
+                        ->where('SH', false)
+                        ->where('RH', false)
+                        ->where('RDND', true)
+                        ->where('SHND', false)
+                        ->where('RHND', false)
+                        ->where('RDSHND', false)
+                        ->where('RDRHND', false)
+                        ->where('date', '>=', $fromdate)
+                        ->where('date', '<=', $todate)
+                        ->sum(DB::raw("TIME_TO_SEC(work_hours)")); // Calcuting the total hours and convert it to seconds
+            $RDND_total_work_hour = gmDate("H", $RDND); 
+            $RDND_total_min = gmDate("i", $RDND);
+
+            //SPECIAL HOLIDAY NIGHT SHIFT
+            $SHND = DB::table('attendances')
+                        ->where('emp_no', '=', $request -> employee_number)
+                        ->where('RD', false)
+                        ->where('RDSH', false)
+                        ->where('RDRH', false)
+                        ->where('SH', false)
+                        ->where('RH', false)
+                        ->where('RDND', false)
+                        ->where('SHND', true)
+                        ->where('RHND', false)
+                        ->where('RDSHND', false)
+                        ->where('RDRHND', false)
+                        ->where('date', '>=', $fromdate)
+                        ->where('date', '<=', $todate)
+                        ->sum(DB::raw("TIME_TO_SEC(work_hours)")); // Calcuting the total hours and convert it to seconds
+            $SHND_total_work_hour = gmDate("H", $SHND); 
+            $SHND_total_min = gmDate("i", $SHND);
+
+
+            //REGULAR HOLIDAY NIGHT SHIFT
+            $RHND = DB::table('attendances')
+                        ->where('emp_no', '=', $request -> employee_number)
+                        ->where('RD', false)
+                        ->where('RDSH', false)
+                        ->where('RDRH', false)
+                        ->where('SH', false)
+                        ->where('RH', false)
+                        ->where('RDND', false)
+                        ->where('SHND', false)
+                        ->where('RHND', true)
+                        ->where('RDSHND', false)
+                        ->where('RDRHND', false)
+                        ->where('date', '>=', $fromdate)
+                        ->where('date', '<=', $todate)
+                        ->sum(DB::raw("TIME_TO_SEC(work_hours)")); // Calcuting the total hours and convert it to seconds
+            $RHND_total_work_hour = gmDate("H", $RHND); 
+            $RHND_total_min = gmDate("i", $RHND);
+
+
+            //RESTDAY SPECIAL HOLIDAY NIGHT SHIFT
+            $RDSHND = DB::table('attendances')
+                        ->where('emp_no', '=', $request -> employee_number)
+                        ->where('RD', false)
+                        ->where('RDSH', false)
+                        ->where('RDRH', false)
+                        ->where('SH', false)
+                        ->where('RH', false)
+                        ->where('RDND', false)
+                        ->where('SHND', false)
+                        ->where('RHND', false)
+                        ->where('RDSHND', true)
+                        ->where('RDRHND', false)
+                        ->where('date', '>=', $fromdate)
+                        ->where('date', '<=', $todate)
+                        ->sum(DB::raw("TIME_TO_SEC(work_hours)")); // Calcuting the total hours and convert it to seconds
+            $RDSHND_total_work_hour = gmDate("H", $RDSHND); 
+            $RDSHND_total_min = gmDate("i", $RDSHND);
+
+
+
+            //RESTDAY REGULAR HOLIDAY NIGHT SHIFT
+            $RDRHND = DB::table('attendances')
+                        ->where('emp_no', '=', $request -> employee_number)
+                        ->where('RD', false)
+                        ->where('RDSH', false)
+                        ->where('RDRH', false)
+                        ->where('SH', false)
+                        ->where('RH', false)
+                        ->where('RDND', false)
+                        ->where('SHND', false)
+                        ->where('RHND', false)
+                        ->where('RDSHND', false)
+                        ->where('RDRHND', true)
+                        ->where('date', '>=', $fromdate)
+                        ->where('date', '<=', $todate)
+                        ->sum(DB::raw("TIME_TO_SEC(work_hours)")); // Calcuting the total hours and convert it to seconds
+            $RDRHND_total_work_hour = gmDate("H", $RDRHND); 
+            $RDRHND_total_min = gmDate("i", $RDRHND);
+
+
+            if($request -> schedule_shift == 'Day'){
 
                 if($request -> monthly_rate == "Fixed Rate"){
 
                     $payroll = new Payroll();
+                    $payroll -> memos = $request -> memos;
                     $payroll -> employee_name = $request -> employee_name;
                     $payroll -> payment_type = $request -> payment_type;
                     $payroll -> employee_number = $request -> employee_number;
@@ -346,9 +455,11 @@ class PayrollController extends Controller
                     $payroll -> philhealth_deduction = 0.00;
                     $payroll -> employee_absent = 0.00;
                     $payroll -> restday = 0.00;
+                    $payroll -> add_adjustment = $request -> add_adjustment;
+                    $payroll -> deduct_adjustment = $request -> deduct_adjustment;
                     $payroll -> gov_contribution = 0.00;
-                    $payroll -> total_deduction = 0.00   +  $payroll -> cash_advance;
-                    $payroll -> gross =  $payroll -> employee_base_salary +   $payroll -> allowance;
+                    $payroll -> total_deduction = 0.00   +  $payroll -> cash_advance +  $payroll -> deduct_adjustment;
+                    $payroll -> gross =  $payroll -> employee_base_salary +   $payroll -> allowance +  $payroll -> add_adjustment;
                   //  $payroll -> net_pay =  ($payroll -> employee_base_salary  +   $payroll -> allowance) - $payroll -> total_deduction; 
                     $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
 
@@ -428,9 +539,8 @@ class PayrollController extends Controller
 
 
                
-
-
                     $payroll = new Payroll();
+                    $payroll -> memos = $request -> memos;
                     $payroll -> employee_name = $request -> employee_name;
                     $payroll -> payment_type = $request -> payment_type;
                     $payroll -> employee_number = $request -> employee_number;
@@ -451,16 +561,24 @@ class PayrollController extends Controller
                     $payroll -> regular_holiday = $RH_salary;
                     $payroll -> restday_regular_holiday = $RDRH_salary;
                     $payroll -> restday_special_holiday = $RDSH_salary;
+                    $payroll -> total_holiday = $payroll -> restday_special_holiday + $payroll -> restday_regular_holiday + $payroll -> regular_holiday + $payroll -> special_holiday + $payroll -> restday;
                     $payroll -> overtime = $total_overtime;
                     $payroll -> restday_overtime = $restday_ot;
                     $payroll -> special_holiday_overtime = $special_holiday_ot;
                     $payroll -> regular_holiday_overtime = $regular_holiday_ot;
                     $payroll -> restday_special_holiday_overtime = $restday_special_holiday_ot;
                     $payroll -> restday_regular_holiday_overtime = $restday_regular_holiday_ot;
-                   
+                    $payroll -> add_adjustment = $request -> add_adjustment;
+                    $payroll -> deduct_adjustment = $request -> deduct_adjustment;
                     
-                    $payroll -> gross =  $payroll -> employee_base_salary +  $payroll -> allowance +  $payroll -> total_overtime +  $payroll -> restday  + $SH_salary + $RH_salary + $RDRH_salary + $RDSH_salary + 
-                                         $payroll -> overtime +  $payroll -> restday_overtime +  $payroll -> special_holiday_overtime +  $payroll -> regular_holiday_overtime +  $payroll -> restday_special_holiday_overtime + $payroll -> restday_regular_holiday_overtime;
+                    $payroll -> gross =  $payroll -> employee_base_salary + 
+                                         $payroll -> allowance +  $payroll -> total_overtime +  
+                                         $payroll -> restday  + $SH_salary + $RH_salary + $RDRH_salary + $RDSH_salary + 
+                                         $payroll -> overtime +  $payroll -> restday_overtime +  
+                                         $payroll -> special_holiday_overtime +  $payroll -> regular_holiday_overtime + 
+                                         $payroll -> restday_special_holiday_overtime + $payroll -> restday_regular_holiday_overtime   + 
+                                         $payroll -> add_adjustment;
+                                      
                    
                     // SSS Deduction
                     if($sss_deduction -> isNotEmpty()){
@@ -484,7 +602,6 @@ class PayrollController extends Controller
                         $payroll -> sss_deduction = 0.00;
                     }
 
-
                     // Philhealth Deduction
                     if($philhealth_deduction -> isNotEmpty()){
 
@@ -506,7 +623,6 @@ class PayrollController extends Controller
                         $payroll -> philhealth_deduction = 0.00;
                     }
 
-
                     // Pag ibig Deduction
                     if($pagibig_deduction -> isNotEmpty()){
 
@@ -517,9 +633,9 @@ class PayrollController extends Controller
 
                                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent;
+                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment;
                                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
-                                $payroll -> net_pay =   $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                                $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                                 break; // Exit the loop after the first deduction that matches
    
                             }
@@ -527,9 +643,9 @@ class PayrollController extends Controller
 
                                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent;
+                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment;
                                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
-                                $payroll -> net_pay =   $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                                $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                                 break; // Exit the loop after the first deduction that matches
                                
                             }
@@ -539,9 +655,9 @@ class PayrollController extends Controller
                     else{
 
                          $payroll -> pag_ibig_deduction = 0.00;
-                         $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent;
+                         $payroll -> total_deduction =   $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment;
                          $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
-                         $payroll -> net_pay =   $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                         $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                     }
                     
                 
@@ -552,235 +668,248 @@ class PayrollController extends Controller
                     ]);
 
                 }
-           }    
+            }    
 
            //--------------------- Night SHIFT HERE ------------------------------------------
            else{
 
-                if($request -> monthly_rate == "Fixed Rate"){
+                // //FOR THE FIXED RATE
+                // if($request -> monthly_rate == "Fixed Rate"){
 
-                    $payroll = new Payroll();
-                    $payroll -> employee_name = $request -> employee_name;
-                    $payroll -> payment_type = $request -> payment_type;
-                    $payroll -> employee_number = $request -> employee_number;
-                    $payroll -> start_date = $request -> start_date;
-                    $payroll -> end_date = $request -> end_date;
-                    $payroll -> pay_date = $request -> pay_date;
-                    $payroll -> allowance = $request -> allowance;
-                    $payroll -> rate_per_hour = $request -> rate_per_hour;
-                    $payroll -> cash_advance = $request -> cash_advance;
-                    $payroll -> employee_base_salary = $request -> base_salary / 2;
-                    $payroll -> night_diff = 0.00;
-                    $payroll -> late_undertime = 0.00;
-                    $payroll -> total_overtime = 0.00;
-                    $payroll -> sss_deduction = 0.00;
-                    $payroll -> pag_ibig_deduction = 0.00;
-                    $payroll -> philhealth_deduction = 0.00;
-                    $payroll -> employee_absent = 0.00;
+                //     $payroll = new Payroll();
+                //     $payroll -> employee_name = $request -> employee_name;
+                //     $payroll -> payment_type = $request -> payment_type;
+                //     $payroll -> employee_number = $request -> employee_number;
+                //     $payroll -> start_date = $request -> start_date;
+                //     $payroll -> end_date = $request -> end_date;
+                //     $payroll -> pay_date = $request -> pay_date;
+                //     $payroll -> allowance = $request -> allowance;
+                //     $payroll -> rate_per_hour = $request -> rate_per_hour;
+                //     $payroll -> cash_advance = $request -> cash_advance;
+                //     $payroll -> employee_base_salary = $request -> base_salary / 2;
+                //     $payroll -> night_diff = 0.00;
+                //     $payroll -> late_undertime = 0.00;
+                //     $payroll -> total_overtime = 0.00;
+                //     $payroll -> sss_deduction = 0.00;
+                //     $payroll -> pag_ibig_deduction = 0.00;
+                //     $payroll -> philhealth_deduction = 0.00;
+                //     $payroll -> employee_absent = 0.00;
+                //     $payroll -> add_adjustment = $request -> add_adjustment;
+                //     $payroll -> deduct_adjustment = $request -> deduct_adjustment;
                     
-                    // $payroll -> restday = 0.00;
-                    $payroll -> total_deduction = 0.00 + $payroll -> cash_advance;
-                    $payroll -> gross =  $payroll -> employee_base_salary +   $payroll -> allowance;
-                    $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                //     // $payroll -> restday = 0.00;
+                //     $payroll -> total_deduction = 0.00 + $payroll -> cash_advance +  $payroll -> deduct_adjustment;
+                //     $payroll -> gross =  $payroll -> employee_base_salary +   $payroll -> allowance + $payroll -> add_adjustment;
+                //     $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
 
-                    $payroll -> save();
+                //     $payroll -> save();
 
-                    return response()->json([
-                            'status' => 200,
-                            'msg' => 'Payroll Successfully',
-                    ]);
-                }
-                else{
+                //     return response()->json([
+                //             'status' => 200,
+                //             'msg' => 'Payroll Successfully',
+                //     ]);
+                // }
+                // else{
 
-                    //May Kaltas
+                //     //NIGHT SHIFT WITH DEDUCTION 
                     
-                    //------------------ late Computation -----------------------------------------------//
-                    $late_total = ($total_latehours * 60) + $late_min;
-                    $late = $late_total / 60;
-                    $computed_late = $late * $request -> rate_per_hour * 1; //Computed Salary
+                //     //------------------ late Computation -----------------------------------------------//
+                //     $late_total = ($total_latehours * 60) + $late_min;
+                //     $late = $late_total / 60;
+                //     $computed_late = $late * $request -> rate_per_hour * 1; //Computed Salary
 
-                    //------------------ late Computation -----------------------------------------------//
-                    $undertime_total = ($total_undertime * 60) + $undertime_min;
-                    $undertime = $undertime_total / 60;
-                    $computed_undertime = $undertime * $request -> rate_per_hour * 1; //Computed Salary
+                //     //------------------ late Computation -----------------------------------------------//
+                //     $undertime_total = ($total_undertime * 60) + $undertime_min;
+                //     $undertime = $undertime_total / 60;
+                //     $computed_undertime = $undertime * $request -> rate_per_hour * 1; //Computed Salary
 
-                    //------------------ Restday Computation -----------------------------------------------//
-                    $restday_total_MinutesWorked = ($RD_total_work_hour * 60) + $RD_min;
-                    $restday_hoursWorked = $restday_total_MinutesWorked / 60;
-                    $restday_salary = $restday_hoursWorked * $request -> rate_per_hour * 1.3; //Computed Salary
+                //     //------------------ Restday Computation -----------------------------------------------//
+                //     $restday_total_MinutesWorked = ($RD_total_work_hour * 60) + $RD_min;
+                //     $restday_hoursWorked = $restday_total_MinutesWorked / 60;
+                //     $restday_salary = $restday_hoursWorked * $request -> rate_per_hour * 1.3; //Computed Salary
                     
-                    //------------------ Rest Day and Special Holiday Computation ------------------------//
-                    $RDSH_total_MinutesWorked = ($RDSH_total_work_hour * 60) + $RDSH_min;
-                    $RDSH_hoursWorked = $RDSH_total_MinutesWorked / 60;
-                    $RDSH_salary = $RDSH_hoursWorked * $request -> rate_per_hour * 1.5;
+                //     //------------------ Rest Day and Special Holiday Computation ------------------------//
+                //     $RDSH_total_MinutesWorked = ($RDSH_total_work_hour * 60) + $RDSH_min;
+                //     $RDSH_hoursWorked = $RDSH_total_MinutesWorked / 60;
+                //     $RDSH_salary = $RDSH_hoursWorked * $request -> rate_per_hour * 1.5;
 
 
-                    //------------------ Rest Day Regular Holiday -------------------------------------//
-                    $RDRH_total_MinutesWorked = ($RDRH_total_work_hour * 60) + $RDRH_min;
-                    $RDRH_hoursWorked = $RDRH_total_MinutesWorked / 60;
-                    $RDRH_salary = $RDRH_hoursWorked * $request -> rate_per_hour * 2.6;
+                //     //------------------ Rest Day Regular Holiday -------------------------------------//
+                //     $RDRH_total_MinutesWorked = ($RDRH_total_work_hour * 60) + $RDRH_min;
+                //     $RDRH_hoursWorked = $RDRH_total_MinutesWorked / 60;
+                //     $RDRH_salary = $RDRH_hoursWorked * $request -> rate_per_hour * 2.6;
 
 
-                    //------------------ Special Holiday -------------------------------------//
-                    $SH_total_MinutesWorked = ($SH_total_work_hour * 60) + $SH_min;
-                    $SH_hoursWorked = $SH_total_MinutesWorked / 60;
-                    $SH_salary = $SH_hoursWorked * $request -> rate_per_hour * 0.3;
+                //     //------------------ Special Holiday -------------------------------------//
+                //     $SH_total_MinutesWorked = ($SH_total_work_hour * 60) + $SH_min;
+                //     $SH_hoursWorked = $SH_total_MinutesWorked / 60;
+                //     $SH_salary = $SH_hoursWorked * $request -> rate_per_hour * 0.3;
                     
-                    //------------------ Regular Holiday -------------------------------------//
-                    $RH_total_MinutesWorked = ($RH_total_work_hour * 60) + $RH_min;
-                    $RH_hoursWorked = $RH_total_MinutesWorked / 60;
-                    $RH_salary = $RH_hoursWorked * $request -> rate_per_hour * 1;
+                //     //------------------ Regular Holiday -------------------------------------//
+                //     $RH_total_MinutesWorked = ($RH_total_work_hour * 60) + $RH_min;
+                //     $RH_hoursWorked = $RH_total_MinutesWorked / 60;
+                //     $RH_salary = $RH_hoursWorked * $request -> rate_per_hour * 1;
 
-                    //------------------------------ Natural na Overtime  ----------------------------//
-                    $total_overtime = ($total_overtime * $request -> rate_per_hour) * 1.25;
+                //     //------------------------------ Natural na Overtime  ----------------------------//
+                //     $total_overtime = ($total_overtime * $request -> rate_per_hour) * 1.25;
                      
-                    //------------------------------ Rest day Overtime ----------------------------------------- //
-                    $restday_ot = ($RDOT_hrs * $request -> rate_per_hour )* 1.69;
+                //     //------------------------------ Rest day Overtime ----------------------------------------- //
+                //     $restday_ot = ($RDOT_hrs * $request -> rate_per_hour )* 1.69;
                     
-                    //------------------------------ Special Holiday overtime ---------------------------------//
-                    $special_holiday_ot = ($SHOT_hrs * $request -> rate_per_hour )* 1.69;
+                //     //------------------------------ Special Holiday overtime ---------------------------------//
+                //     $special_holiday_ot = ($SHOT_hrs * $request -> rate_per_hour )* 1.69;
                     
-                    //------------------------------ Regular Holiday overtime ---------------------------------//
-                    $regular_holiday_ot = ($RHOT_hrs * $request -> rate_per_hour )* 2.6;
+                //     //------------------------------ Regular Holiday overtime ---------------------------------//
+                //     $regular_holiday_ot = ($RHOT_hrs * $request -> rate_per_hour )* 2.6;
 
-                    //------------------------------ Restday Special Holiday overtime ---------------------------------//
-                    $restday_special_holiday_ot = ($RDSHOT_hrs * $request -> rate_per_hour )* 1.95;
+                //     //------------------------------ Restday Special Holiday overtime ---------------------------------//
+                //     $restday_special_holiday_ot = ($RDSHOT_hrs * $request -> rate_per_hour )* 1.95;
 
-                    //------------------------------ Restday Regular Holiday overtime ---------------------------------//
-                    $restday_regular_holiday_ot = ($RDRHOT_hrs * $request -> rate_per_hour )* 3.38;
+                //     //------------------------------ Restday Regular Holiday overtime ---------------------------------//
+                //     $restday_regular_holiday_ot = ($RDRHOT_hrs * $request -> rate_per_hour )* 3.38;
 
 
-                    //Calculation for allowance
+                //     //Calculation for allowance
                    
-                    $allowance_per_day =  $request -> allowance  / 11;  // makukuha an daily allowance
-                    $total_absent = $absent * $allowance_per_day; // total absent multiply by total allowance
-                    $total_allowance =  $request -> allowance  -  $total_absent; // to get allowance = allowance per cut  then subract the total absent
+                //     $allowance_per_day =  $request -> allowance  / 11;  // makukuha an daily allowance
+                //     $total_absent = $absent * $allowance_per_day; // total absent multiply by total allowance
+                //     $total_allowance =  $request -> allowance  -  $total_absent; // to get allowance = allowance per cut  then subract the total absent
 
 
-                       //Night diff with 10%
-                   $ten_percent_night_differential = ($ten_percent_addional *  $request -> rate_per_hour) * 0.1;
+                //     //Night diff with 10%
+                //     $ten_percent_night_differential = ($ten_percent_addional *  $request -> rate_per_hour) * 0.1;
 
 
 
 
-                    $payroll = new Payroll();
-                    $payroll -> employee_name = $request -> employee_name;
-                    $payroll -> payment_type = $request -> payment_type;
-                    $payroll -> employee_number = $request -> employee_number;
-                    $payroll -> start_date = $request -> start_date;
-                    $payroll -> end_date = $request -> end_date;
-                    $payroll -> pay_date = $request -> pay_date;
-                    $payroll -> rate_per_hour = $request -> rate_per_hour;
-                    $payroll -> cash_advance = $request -> cash_advance;
-                    $payroll -> employee_base_salary = $request -> base_salary / 2;
-                    $payroll -> night_diff = $ten_percent_night_differential;
-                    $payroll -> employee_absent = $absent * $request -> daily_rate;
-                    $payroll -> allowance = $total_allowance;
-                    $payroll -> undertime_total =  $computed_undertime;
-                    $payroll -> late_total = $computed_late;
-                    $payroll -> late_undertime = $computed_late + $computed_undertime;
-                    $payroll -> restday = $restday_salary;
-                    $payroll -> special_holiday = $SH_salary;
-                    $payroll -> regular_holiday = $RH_salary;
-                    $payroll -> restday_regular_holiday = $RDRH_salary;
-                    $payroll -> restday_special_holiday = $RDSH_salary;
-                    $payroll -> overtime = $total_overtime;
-                    $payroll -> restday_overtime = $restday_ot;
-                    $payroll -> special_holiday_overtime = $special_holiday_ot;
-                    $payroll -> regular_holiday_overtime = $regular_holiday_ot;
-                    $payroll -> restday_special_holiday_overtime = $restday_special_holiday_ot;
-                    $payroll -> restday_regular_holiday_overtime = $restday_regular_holiday_ot;
-                   
+                //     $payroll = new Payroll();
+                //     $payroll -> employee_name = $request -> employee_name;
+                //     $payroll -> payment_type = $request -> payment_type;
+                //     $payroll -> employee_number = $request -> employee_number;
+                //     $payroll -> start_date = $request -> start_date;
+                //     $payroll -> end_date = $request -> end_date;
+                //     $payroll -> pay_date = $request -> pay_date;
+                //     $payroll -> rate_per_hour = $request -> rate_per_hour;
+                //     $payroll -> cash_advance = $request -> cash_advance;
+                //     $payroll -> employee_base_salary = $request -> base_salary / 2;
+                //     $payroll -> night_diff = $ten_percent_night_differential;
+                //     $payroll -> employee_absent = $absent * $request -> daily_rate;
+                //     $payroll -> allowance = $total_allowance;
+                //     $payroll -> undertime_total =  $computed_undertime;
+                //     $payroll -> late_total = $computed_late;
+                //     $payroll -> late_undertime = $computed_late + $computed_undertime;
+                //     $payroll -> restday = $restday_salary;
+                //     $payroll -> special_holiday = $SH_salary;
+                //     $payroll -> regular_holiday = $RH_salary;
+                //     $payroll -> restday_regular_holiday = $RDRH_salary;
+                //     $payroll -> restday_special_holiday = $RDSH_salary;
+                //     $payroll -> total_holiday = $payroll -> restday_special_holiday + $payroll -> restday_regular_holiday + $payroll -> regular_holiday + $payroll -> special_holiday + 
+
+                //     $payroll -> overtime = $total_overtime;
+                //     $payroll -> restday_overtime = $restday_ot;
+                //     $payroll -> special_holiday_overtime = $special_holiday_ot;
+                //     $payroll -> regular_holiday_overtime = $regular_holiday_ot;
+                //     $payroll -> restday_special_holiday_overtime = $restday_special_holiday_ot;
+                //     $payroll -> restday_regular_holiday_overtime = $restday_regular_holiday_ot;
+                //     $payroll -> add_adjustment = $request -> add_adjustment;
+                //     $payroll -> deduct_adjustment = $request -> deduct_adjustment;
                     
-                    $payroll -> gross =  $payroll -> employee_base_salary +  $payroll -> allowance + $payroll -> night_diff +  $payroll -> total_overtime +  $payroll -> restday  + $SH_salary + $RH_salary + $RDRH_salary + $RDSH_salary + 
-                                         $payroll -> overtime +  $payroll -> restday_overtime +  $payroll -> special_holiday_overtime +  $payroll -> regular_holiday_overtime +  $payroll -> restday_special_holiday_overtime + $payroll -> restday_regular_holiday_overtime;
+
+                //   //  dd($payroll);
+                        
+                //     $payroll -> gross =  $payroll -> employee_base_salary +  $payroll -> allowance + $payroll -> night_diff +  $payroll -> total_overtime +  $payroll -> restday  + $SH_salary + $RH_salary + $RDRH_salary + $RDSH_salary + 
+                //                          $payroll -> overtime +  $payroll -> restday_overtime +  $payroll -> special_holiday_overtime +  $payroll -> regular_holiday_overtime +  $payroll -> restday_special_holiday_overtime + $payroll -> restday_regular_holiday_overtime 
+                //                          + $payroll -> add_adjustment;
                    
                  
-                    if($sss_deduction -> isNotEmpty()){
+                //     if($sss_deduction -> isNotEmpty()){
 
-                        foreach($sss_deduction as $deduction){
+                //         foreach($sss_deduction as $deduction){
 
-                            if ($payroll -> employee_base_salary >= $deduction->from && $payroll -> employee_base_salary >= $deduction->to) {
+                //             if ($payroll -> employee_base_salary >= $deduction->from && $payroll -> employee_base_salary >= $deduction->to) {
 
-                                $payroll -> sss_deduction = $deduction -> regular_EE / 2;
-                              //  break; // Exit the loop after the first deduction that matches
-                            }
-                            elseif ($payroll -> employee_base_salary >= $deduction->from && $payroll -> employee_base_salary <= $deduction->to) {
+                //                 $payroll -> sss_deduction = $deduction -> regular_EE / 2;
+                //               //  break; // Exit the loop after the first deduction that matches
+                //             }
+                //             elseif ($payroll -> employee_base_salary >= $deduction->from && $payroll -> employee_base_salary <= $deduction->to) {
 
-                                $payroll -> sss_deduction = $deduction -> regular_EE / 2;
-                              //  break; // Exit the loop after the first deduction that matches
-                            }
+                //                 $payroll -> sss_deduction = $deduction -> regular_EE / 2;
+                //               //  break; // Exit the loop after the first deduction that matches
+                //             }
                            
-                        }
-                    }
-                    else{
-                        $payroll -> sss_deduction = 0.00;
-                    }
+                //         }
+                //     }
+                //     else{
+                //         $payroll -> sss_deduction = 0.00;
+                //     }
 
-                    if($philhealth_deduction -> isNotEmpty()){
+                //     if($philhealth_deduction -> isNotEmpty()){
 
-                        foreach($philhealth_deduction as $phil_deduction){
+                //         foreach($philhealth_deduction as $phil_deduction){
                             
-                            if($payroll -> employee_base_salary >= $phil_deduction->monthly_basic_salary_from && $payroll -> employee_base_salary >= $phil_deduction->monthly_basic_salary_to){
+                //             if($payroll -> employee_base_salary >= $phil_deduction->monthly_basic_salary_from && $payroll -> employee_base_salary >= $phil_deduction->monthly_basic_salary_to){
 
-                                $payroll -> philhealth_deduction =  $payroll -> employee_base_salary * $phil_deduction -> premium_rate / 2;
-                            }
+                //                 $payroll -> philhealth_deduction =  $payroll -> employee_base_salary * $phil_deduction -> premium_rate / 2;
+                //             }
 
-                            elseif($payroll -> employee_base_salary >= $phil_deduction->monthly_basic_salary_from && $payroll -> employee_base_salary <= $phil_deduction->monthly_basic_salary_to) {
+                //             elseif($payroll -> employee_base_salary >= $phil_deduction->monthly_basic_salary_from && $payroll -> employee_base_salary <= $phil_deduction->monthly_basic_salary_to) {
 
-                                $payroll -> philhealth_deduction =  $payroll -> employee_base_salary * $phil_deduction -> premium_rate / 2;
-                               // break; // Exit the loop after the first deduction that matches
-                            }
+                //                 $payroll -> philhealth_deduction =  $payroll -> employee_base_salary * $phil_deduction -> premium_rate / 2;
+                //                // break; // Exit the loop after the first deduction that matches
+                //             }
                            
-                        }
-                    }
-                    else{
-                        $payroll -> philhealth_deduction = 0.00;
-                    }
+                //         }
+                //     }
+                //     else{
+                //         $payroll -> philhealth_deduction = 0.00;
+                //     }
 
-                    if($pagibig_deduction -> isNotEmpty()){
+                //     if($pagibig_deduction -> isNotEmpty()){
 
-                        foreach($pagibig_deduction as $pagibig_deduct){
+                //         foreach($pagibig_deduction as $pagibig_deduct){
 
                          
-                            if ($payroll -> employee_base_salary >= $pagibig_deduct->monthly_salary_from && $payroll -> employee_base_salary <= $pagibig_deduct->monthly_salary_to) {
+                //             if ($payroll -> employee_base_salary >= $pagibig_deduct->monthly_salary_from && $payroll -> employee_base_salary <= $pagibig_deduct->monthly_salary_to) {
 
-                                $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
+                //                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent;
-                                $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
-                                $payroll -> net_pay =   $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
-                                break; // Exit the loop after the first deduction that matches
+                //                 $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment;
+                //                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
+                //                 $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                //                 break; // Exit the loop after the first deduction that matches
    
-                            }
-                            elseif ($payroll -> employee_base_salary >= $pagibig_deduct->monthly_salary_from && $payroll -> employee_base_salary >= $pagibig_deduct->monthly_salary_to) {
+                //             }
+                //             elseif ($payroll -> employee_base_salary >= $pagibig_deduct->monthly_salary_from && $payroll -> employee_base_salary >= $pagibig_deduct->monthly_salary_to) {
 
-                                $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
+                //                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent;
-                                $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
-                                $payroll -> net_pay =   $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
-                                break; // Exit the loop after the first deduction that matches
+                //                 $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment;
+                //                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
+                //                 $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                //                 break; // Exit the loop after the first deduction that matches
                                
-                            }
+                //             }
                             
-                        }
-                    }
-                    else{
+                //         }
+                //     }
+                //     else{
 
-                         $payroll -> pag_ibig_deduction = 0.00;
-                         $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent;
-                         $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
-                         $payroll -> net_pay =   $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
-                    }
+                //          $payroll -> pag_ibig_deduction = 0.00;
+
+                //          $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment;
+                //          $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
+                //          $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                //     }
                     
                 
-                    $payroll -> save();
-                    return response()->json([
-                            'status' => 200,
-                            'msg' => 'Payroll Successfully',
-                    ]);
-                }
+                //     $payroll -> save();
+                //     return response()->json([
+                //             'status' => 200,
+                //             'msg' => 'Payroll Successfully',
+                //     ]);
+                // }
+                
+              
 
            }
 
@@ -862,8 +991,6 @@ class PayrollController extends Controller
 		return response()->json($view_payslip);
     }
 
-
-
     public function get_all_payrollrecord(Request $request)
     {
         if ($request->ajax()) {
@@ -879,9 +1006,8 @@ class PayrollController extends Controller
                                     ->where('end_date', '<=', $end_date)
                                     ->get();
 
-
             }
-             else {
+            else {  
                 
                 $payrolls = Payroll::with('employee')->get();
             }
@@ -897,3 +1023,6 @@ class PayrollController extends Controller
     }
    
 }
+
+
+
