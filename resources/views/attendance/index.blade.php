@@ -39,13 +39,7 @@
                     </a>
                 </li>
 
-                {{-- <li class="nav-item">
-                    <a class="tab d-flex align-items-center ms-2" id="team_attendance-tab" data-bs-toggle="tab" href="#team_attendance"
-                        role="tab" aria-controls="team_attendace" aria-selected="false">
-                        <i class='bx bx-time'></i>
-                        Team Attendance
-                    </a>
-                </li> --}}
+            
 
 
             </ul>
@@ -382,28 +376,6 @@
                         @endif
                     </div>
                 </div>
-
-                  {{-- Team Attendance Tab --}}
-                  {{-- <div class="tab-pane fade show" id="team_attendance" role="tabpanel" aria-labelledby="team_attendance-tab">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            @if(Auth::user()->hasRole(['HR','accounting','administrator','assistantHR','CEO']))
-                                <div class="section-container">
-                                    <div class="d-flex align-items-center">
-                                        <i class='bx bx-book section-icon'></i>
-                                        <h5 class="section-header">Team Attendance</h5>
-                                    </div>
-                                    <div class="row-table-row" id="">
-
-                                    </div>
-                                </div>
-                            @else
-                                <h4 class="text-center text-secondary my-5">Only Accounting and Human Resources have access to this Website.</h4>
-
-                            @endif
-                        </div>
-                    </div>
-                </div> --}}
 
         </div>
     </div>
