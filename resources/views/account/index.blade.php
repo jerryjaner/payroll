@@ -1,5 +1,7 @@
 @extends('layouts.main')
 @section('main-content')
+<div id="content-container">
+    <!-- Content will be dynamically loaded here -->
 <div class="page-row row">
     <div class="col-xl-6">
         <h2 class="page-heading">User Profile</h2>
@@ -740,6 +742,9 @@
     </div>
 </div>
 {{-- END OF MODAL --}}
+
+
+</div>
 
 <style>
 

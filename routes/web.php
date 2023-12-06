@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Deduction;
+// use App\Http\Controllers\Deduction;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
@@ -34,6 +34,11 @@ Route::get('/', function () {
     return view('auth.login');
 
 });
+
+Route::get('linkstorage',function() {
+    Artisan::call('storage:link');
+});
+
 
 Auth::routes();
 
@@ -133,8 +138,6 @@ Auth::routes();
 
     Route::get('/approve-COO', [OvertimeController::class, 'approve_COO'])->name('approve_COO');
     Route::post('/approve-request-COO', [OvertimeController::class, 'submit_approve_COO'])->name('submit_approve_COO');
-
-
 
 
 

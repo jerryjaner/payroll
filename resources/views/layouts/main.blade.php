@@ -8,6 +8,12 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        {{-- <!-- PWA -->
+        <meta name="theme-color" content="#6777ef"/>
+        <link rel="apple-touch-icon" href="{{ asset('logo.PNG') }}">
+        <link rel="manifest" href="{{ asset('/manifest.json') }}"> --}}
+
+
         <title>Theorem-MS</title>
 
         <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
@@ -79,17 +85,17 @@
                  
                     
                     <ul class="menu-links">
-                    @if(Auth::user()->hasRole(['HR','assistantHR','CEO']))
+                        @if(Auth::user()->hasRole(['HR','assistantHR','CEO']))
 
-                        <li class="nav-link {{ request()->segment(1) == 'dashboard' ? 'nav-active' : '' }}"
-                            data-tippy-content="Dashboard" data-tippy-arrow="false">
-                            <a href="{{ route('dashboard') }}">
-                                <i class='bx bx-grid-alt icon'></i>
-                                <span class="text nav-text">Dashboard</span>
-                            </a>
-                        </li>
+                            <li class="nav-link {{ request()->segment(1) == 'dashboard' ? 'nav-active' : '' }}"
+                                data-tippy-content="Dashboard" data-tippy-arrow="false">
+                                <a href="{{ route('dashboard') }}">
+                                    <i class='bx bx-grid-alt icon'></i>
+                                    <span class="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
 
-                    @endif
+                        @endif
                        
 
                         {{-- @if(Auth::user()->hasRole(['accounting','HR','assistantHR','attendance','teamleader'])) --}}
@@ -478,7 +484,6 @@
                 });
 
                 // DataTable
-
                 $('.time-tbl').DataTable({
 
                     scrollX: true,
@@ -507,8 +512,7 @@
 
 
                 });
-
-              
+             
 
             })
         </script>
@@ -540,7 +544,14 @@
             });
         </script>
 
-
+        {{-- <script src="{{ asset('/sw.js') }}"></script>
+        <script>
+            if (!navigator.serviceWorker.controller) {
+                navigator.serviceWorker.register("/sw.js").then(function (reg) {
+                    console.log("Service worker has been registered for scope: " + reg.scope);
+                });
+            }
+        </script> --}}
 
         @yield('page-scripts')
 

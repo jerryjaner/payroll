@@ -39,6 +39,24 @@ class UserSeeder extends Seeder
         //     ]);
         // }
 
+        // $faker = Faker::create();
+        // foreach (range(1, 500) as $index) {
+        //     $randomDate = $faker->dateTimeBetween('2020-01-01', '2023-12-31')->format('Y-m-d');
+        //     $randomTimeIn = $faker->time('H:i:s');
+        //     $randomTimeOut = $faker->time('H:i:s');
+            
+        //     // You may calculate random work hours or keep it constant based on your requirements
+        //     $randomWorkHours = $faker->time('H:i:s');
+
+        //     DB::table('attendances')->insert([
+        //         'emp_no' => 'EMP_001',
+        //         'time_in' => $randomTimeIn,
+        //         'time_out' => $randomTimeOut,
+        //         'work_hours' => $randomWorkHours,
+        //         'date' => $randomDate,
+        //     ]);
+        // }
+
         
         $user = User::create([
             'name' => 'Jerry Janer ',

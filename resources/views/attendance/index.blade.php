@@ -2,10 +2,10 @@
 @section('main-content')
 
     <div class="page-row row">
-        <div class="col-xl-6">
+        <div class="col-xl-5">
             <h2 class="page-heading">Attendance</h2>
         </div>
-        <div class="col-xl-6">
+        <div class="col-xl-7">
             <ul class="nav nav-tabs d-flex justify-content-end" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="tab active d-flex align-items-center" id="tracker-tab" data-bs-toggle="tab" href="#tracker"
@@ -38,6 +38,15 @@
                        Absent/Onleave
                     </a>
                 </li>
+
+                {{-- <li class="nav-item">
+                    <a class="tab d-flex align-items-center ms-2" id="team_attendance-tab" data-bs-toggle="tab" href="#team_attendance"
+                        role="tab" aria-controls="team_attendace" aria-selected="false">
+                        <i class='bx bx-time'></i>
+                        Team Attendance
+                    </a>
+                </li> --}}
+
 
             </ul>
 
@@ -228,7 +237,7 @@
                             <div class="col-xl-7">
 
                                 <div class="card calendar-card">
-                                    <div class="card-body">
+                                    <div class="card-body"> 
                                         <div id="calendar-leave"></div>
                                     </div>
                                 </div>
@@ -308,7 +317,6 @@
                 </div>
 
                 {{-- absent  Tab --}}
-
                 <div class="tab-pane fade show" id="absent" role="tabpanel" aria-labelledby="absent-tab">
                     <div class="row">
                         @if(Auth::user()->hasRole(['HR','teamleader','assistantHR','CEO']))
@@ -375,6 +383,27 @@
                     </div>
                 </div>
 
+                  {{-- Team Attendance Tab --}}
+                  {{-- <div class="tab-pane fade show" id="team_attendance" role="tabpanel" aria-labelledby="team_attendance-tab">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            @if(Auth::user()->hasRole(['HR','accounting','administrator','assistantHR','CEO']))
+                                <div class="section-container">
+                                    <div class="d-flex align-items-center">
+                                        <i class='bx bx-book section-icon'></i>
+                                        <h5 class="section-header">Team Attendance</h5>
+                                    </div>
+                                    <div class="row-table-row" id="">
+
+                                    </div>
+                                </div>
+                            @else
+                                <h4 class="text-center text-secondary my-5">Only Accounting and Human Resources have access to this Website.</h4>
+
+                            @endif
+                        </div>
+                    </div>
+                </div> --}}
 
         </div>
     </div>
