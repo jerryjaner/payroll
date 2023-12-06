@@ -225,7 +225,7 @@
                         <i class='bx bx-edit section-icon'></i>
                         <h5 class="section-header">VPO Approval</h5>
                     </div>
-                    <input type="" name="VPO_id" id="VPO_id" hidden>
+                    <input type="hidden" name="VPO_id" id="VPO_id" hidden>
                 
                     <h5 class="text-center mt-4">Do you really want to accept this request?</h5>
 

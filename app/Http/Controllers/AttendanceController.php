@@ -452,8 +452,8 @@ class AttendanceController extends Controller
 
                                         //START OF UNDERTIME
 
-                                        $timee = Carbon::createFromTime(18, 00, 00, 'GMT+8');
-                                        $timeOUT = Carbon::parse($timee)->format('H:i:s');//declared timeout for testing or debugging only
+                                        $timee = Carbon::createFromTime(11, 00, 00, 'GMT+8');
+                                        $timeOUT2 = Carbon::parse($timee)->format('H:i:s');//declared timeout for testing or debugging only
 
                                         $timeee = Carbon::now('GMT+8')->format('H:i:s');
                                         $timeOUT111 = Carbon::parse($timeee)->format('H:i:s');//realtime used in timeout
@@ -1008,7 +1008,7 @@ class AttendanceController extends Controller
                                             
                                             else//UNDERTIME without OT================================================================================================================
                                             {
-                                                $timee = Carbon::createFromTime(13, 00, 00, 'GMT+8');
+                                                $timee = Carbon::createFromTime(14, 00, 00, 'GMT+8');
                                                 $timeOUT = Carbon::parse($timee)->format('H:i:s');//declared and for testing or debugging only
 
                                                 $timeee = Carbon::now('GMT+8')->format('H:i:s');
@@ -1017,7 +1017,7 @@ class AttendanceController extends Controller
 
                                                 Attendance::where('emp_no', '=', $request -> scanned)
                                                           ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
-                                                          ->update(['time_out' => $timeOUT]);
+                                                          ->update(['time_out' => $timeOUT1]);
 
                                                 $attend = Attendance::where('emp_no', '=', $request -> scanned)
                                                                     ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
@@ -1058,7 +1058,7 @@ class AttendanceController extends Controller
 
                                                         }
                                                        //if timeout is greater than breaktime (nag out pero nasa breaktime) working 
-                                                        else if($attends->time_out    >     $breakTime    &&    $attends->time_out    <    $breakTime_end   &&   $attends->time_in    <=    $breakTime)
+                                                        else if($attends->time_in    <=    $breakTime  &&   $attends->time_out    >     $breakTime    &&    $attends->time_out    <    $breakTime_end)
                                                         {
                                                             //nag out na less than sa breaktime start pero less than breaktime end
                                                             $sched_Out = Carbon::parse($attends ->employee-> sched_end);
@@ -1101,7 +1101,27 @@ class AttendanceController extends Controller
                                                                         'status' => 200,
                                                                         'msg' => 'Attendance updated Successfully',
                                                                     ]);
+                                                        }
+                                                        else if ($attends->time_in   >   $breakTime_end    &&   $attends->time_out    >=    $breakTime_end)///nag in ng lagapas na sa breaktime stu
+                                                        {
+                                                            $sched_Out = Carbon::parse($attends ->employee-> sched_end);
+                                                            $UTDiff = $sched_Out->diffInSeconds($attends ->time_out);
+                                                            $UTime = gmdate('H:i:s', $UTDiff);
 
+                                                            $startTime = Carbon::parse($attends -> time_in);
+                                                            $endTime = Carbon::parse($attends -> time_out);
+                                                            $interval = $startTime->diffInSeconds($endTime);
+                                                            $totalDuration = gmdate('H:i:s', $interval);
+
+                                                            Attendance::where('emp_no', '=', $request -> scanned)
+                                                                      ->where('date', '=', Carbon::now('GMT+8')->format('Y-m-d'))
+                                                                      ->update(['undertime_hours'=>$UTime,
+                                                                        'work_hours' => $totalDuration]);
+
+                                                            return response()->json([
+                                                                'status' => 200,
+                                                                'msg' => 'Attendance updated Successfully',
+                                                            ]);
                                                         }
                                                         else
                                                         {

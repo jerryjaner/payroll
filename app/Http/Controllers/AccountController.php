@@ -44,25 +44,25 @@ class AccountController extends Controller
             $validator = \Validator::make($request -> all(),[
                 'employee_name' => 'required',
                 'employee_position' => 'required',
-                'base_salary' => 'required',
+                // 'base_salary' => 'required',
                 // 'daily_rate' => 'required',
                 'employee_department' => 'required',
-                'sched_start' => 'required',
-                'sched_end' => 'required',
-                'breaktime_start' => 'required',
-                'breaktime_end' => 'required',
-                'employee_shift' => 'required',
-                'work_days' => 'required',
-                'date_hired' => 'required',
-                'qr' => 'qr',
+                // 'sched_start' => 'required',
+                // 'sched_end' => 'required',
+                // 'breaktime_start' => 'required',
+                // 'breaktime_end' => 'required',
+                // 'employee_shift' => 'required',
+                // 'work_days' => 'required',
+                // 'date_hired' => 'required',
+                // 'qr' => 'qr',
                 'employee_birthday' => 'required',
     
                 // 'sss' => 'required',
                 // 'pagibig' => 'required',
                 // 'philhealth' => 'required',
                 'employee_address' => 'required',
-                'employee_allowance' => 'required',
-                'employee_contact_number' => 'required',
+                // 'employee_allowance' => 'required',
+                // 'employee_contact_number' => 'required',
                 'emergency_contact_name' => 'required',
                 'emergency_contact_number' => 'required',
             ]);
@@ -92,31 +92,31 @@ class AccountController extends Controller
                     $emp_update -> image = $fileName;
                 }
                 // Rate
-                $base_salary = $request -> base_salary;
-                $rate = $base_salary / 22;
+                // $base_salary = $request -> base_salary;
+                // $rate = $base_salary / 22;
     
                 $emp_update -> employee_name = $request -> employee_name;
                 // $emp_update -> daily_rate = $request -> daily_rate;
-                $emp_update -> base_salary = $request -> base_salary;
-                $emp_update -> monthly_rate = $request -> monthly_rate; 
-                $emp_update -> daily_rate = $rate;
+                // $emp_update -> base_salary = $request -> base_salary;
+                // $emp_update -> monthly_rate = $request -> monthly_rate; 
+                // $emp_update -> daily_rate = $rate;
                 $emp_update -> employee_position = $request -> employee_position;
                 $emp_update -> employee_department = $request -> employee_department;
-                $emp_update -> sched_start = $request -> sched_start;
-                $emp_update -> sched_end = $request -> sched_end;
+                // $emp_update -> sched_start = $request -> sched_start;
+                // $emp_update -> sched_end = $request -> sched_end;
     
-                $emp_update -> breaktime_start = $request -> breaktime_start;
-                $emp_update -> breaktime_end = $request -> breaktime_end;
-                $emp_update -> employee_shift = $request -> employee_shift;
-                $emp_update -> work_days = implode(',', $request -> work_days);
-                $emp_update -> date_hired = $request -> date_hired;
+                // $emp_update -> breaktime_start = $request -> breaktime_start;
+                // $emp_update -> breaktime_end = $request -> breaktime_end;
+                // $emp_update -> employee_shift = $request -> employee_shift;
+                // $emp_update -> work_days = implode(',', $request -> work_days);
+                // $emp_update -> date_hired = $request -> date_hired;
                 $emp_update -> employee_birthday = $request -> employee_birthday;
-                $emp_update -> qr = $request -> employee_no;
+                // $emp_update -> qr = $request -> employee_no;
                 $emp_update -> employee_address = $request -> employee_address;
                 $emp_update -> sss_number = $request -> sss;
                 $emp_update -> pagibig_number = $request -> pagibig;
                 $emp_update -> philhealth_number = $request -> philhealth;
-                $emp_update -> employee_allowance = $request -> employee_allowance;
+                // $emp_update -> employee_allowance = $request -> employee_allowance;
                 $emp_update -> employee_contact_number = $request -> employee_contact_number;
                 $emp_update -> emergency_contact_name = $request -> emergency_contact_name;
                 $emp_update -> emergency_contact_number = $request -> emergency_contact_number;
