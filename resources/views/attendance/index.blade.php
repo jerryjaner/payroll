@@ -118,13 +118,13 @@
                                                     <div id="employee_attendance" class="QR">
                                                         <input type="hidden" name="attendance_id" id="attendance_id">
 
-                                                        <input type="text" class="form-control  scanned" name="scanned" id="empID" style="text-align: center; font-size:16px;" placeholder="Employee Number">
+                                                        <input  type="text" class="form-control  scanned" name="scanned" id="empID" style="text-align: center; font-size:16px;" value="{{auth()->user()->employee->employee_no}}" placeholder="Employee Number">
                                                         <span class="text-danger error-text scanned_error"></span>
 
                                                         
                                                         <div class="form-row first-row">
                                                             <div class="d-flex justify-content-end">
-                                                                 <button id="my-btn" class="btn btn-primary btn-sm mt-1 float-end  add_attendance" type="submit">Submit</button>
+                                                                 <button id="my-btn" class="btn btn-primary btn-sm mt-1 w-100 p-2  add_attendance" type="submit">Time In</button>
                                                             </div>
                                                         </div>
 
@@ -659,8 +659,8 @@
                                 $.each(response.errors, function (key, err_value) {
                                     $('#save_msgList').append('<li>' + err_value + '</li>');
                                 });
-                                $('#empID').val('');
-                                $('#my-btn').text('Submit');
+                                //$('#empID').val('');
+                                $('#my-btn').text('Time Out');
                             }
                             //if the user scan again for the 3rd time which he already completed time in time out
                             else if (response.status == 0) {
@@ -669,17 +669,17 @@
                                 $('#save_msgList').html("");
                                 $('#save_msgList').addClass('alert alert-danger');
                                 $('#save_msgList').append('<li>' + 'Your attendance for today is already completed.' + '</li>');
-                                $('#empID').val('');
-                                $('#my-btn').text('Submit');
+                                //$('#empID').val('');
+                                $('#my-btn').text('Time In');
                             }
 
                             else {
 
                                 $('#my-btn').removeAttr("disabled");
-                                $('#my-btn').text('Submit');
+                                //$('#my-btn').text('Time Out');
                                 $('#save_msgList').html("");
                                 $('#success_message').addClass('alert alert-success');
-                                $('#empID').val('');
+                                //$('#empID').val('');
 
                                 fetchAttendance();
                                 AllAttendance();
