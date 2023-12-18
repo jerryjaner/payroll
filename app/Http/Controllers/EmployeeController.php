@@ -360,10 +360,7 @@ class EmployeeController extends Controller
 		$id = $request->id;
 		$emp = Employee::find($id);
         $users = User::find($id);
-
-
-      
-       
+        
         if (Storage::delete('public/employee/images/' . $emp->image)) {
 
 			Employee::destroy($id);

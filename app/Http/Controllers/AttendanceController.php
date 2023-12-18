@@ -1764,7 +1764,7 @@ class AttendanceController extends Controller
                                             
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -1824,7 +1824,7 @@ class AttendanceController extends Controller
                                                            
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -1858,7 +1858,7 @@ class AttendanceController extends Controller
                                                                
                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -1893,7 +1893,7 @@ class AttendanceController extends Controller
                                                              
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -1926,7 +1926,7 @@ class AttendanceController extends Controller
     
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -1984,7 +1984,7 @@ class AttendanceController extends Controller
                                             
                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -2018,7 +2018,7 @@ class AttendanceController extends Controller
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                              
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2052,7 +2052,7 @@ class AttendanceController extends Controller
                                                                 //FOR THE RDSHND 
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2143,7 +2143,7 @@ class AttendanceController extends Controller
                                                                    
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -2168,7 +2168,7 @@ class AttendanceController extends Controller
 
                                                                     //Special Holiday
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2194,7 +2194,7 @@ class AttendanceController extends Controller
 
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2220,7 +2220,7 @@ class AttendanceController extends Controller
         
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -2245,7 +2245,7 @@ class AttendanceController extends Controller
                                                                     
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2399,7 +2399,7 @@ class AttendanceController extends Controller
                                                                
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -2465,7 +2465,7 @@ class AttendanceController extends Controller
                                                                 // dd('3');
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -2500,7 +2500,7 @@ class AttendanceController extends Controller
                                                                
                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2536,7 +2536,7 @@ class AttendanceController extends Controller
                                                                  //  dd('ops');
                                                                  //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                  $time_in = Carbon::parse($data->night_shift_date);
-                                                                 $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                  $subtract = $time_in->diffInSeconds($holiday_date);
                                                                  $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2572,7 +2572,7 @@ class AttendanceController extends Controller
                                                                 // dd('4');
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -2635,7 +2635,7 @@ class AttendanceController extends Controller
                                                                 // dd('6');
                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -2671,7 +2671,7 @@ class AttendanceController extends Controller
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                              
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2706,7 +2706,7 @@ class AttendanceController extends Controller
                                                                  //FOR THE RDSHND 
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2802,7 +2802,7 @@ class AttendanceController extends Controller
                                                                 
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -2829,7 +2829,7 @@ class AttendanceController extends Controller
 
                                                                     //Special Holiday
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2857,7 +2857,7 @@ class AttendanceController extends Controller
 
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                     $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -2885,7 +2885,7 @@ class AttendanceController extends Controller
         
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -2913,7 +2913,7 @@ class AttendanceController extends Controller
                                                                     
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3069,7 +3069,7 @@ class AttendanceController extends Controller
                                                                 
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -3132,7 +3132,7 @@ class AttendanceController extends Controller
                                                                 // dd('3');
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -3167,7 +3167,7 @@ class AttendanceController extends Controller
                                                                
                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3203,7 +3203,7 @@ class AttendanceController extends Controller
                                                            
                                                                  //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                  $time_in = Carbon::parse($data->night_shift_date);
-                                                                 $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                  $subtract = $time_in->diffInSeconds($holiday_date);
                                                                  $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3239,7 +3239,7 @@ class AttendanceController extends Controller
                                                                 // dd('4');
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -3301,7 +3301,7 @@ class AttendanceController extends Controller
                                                                 // dd('6');
                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -3337,7 +3337,7 @@ class AttendanceController extends Controller
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                              
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3373,7 +3373,7 @@ class AttendanceController extends Controller
                                                                  //FOR THE SHND 
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3468,7 +3468,7 @@ class AttendanceController extends Controller
                                                                 
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -3495,7 +3495,7 @@ class AttendanceController extends Controller
 
                                                                     //Special Holiday
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3523,7 +3523,7 @@ class AttendanceController extends Controller
 
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3551,7 +3551,7 @@ class AttendanceController extends Controller
         
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -3579,7 +3579,7 @@ class AttendanceController extends Controller
                                                                     
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3745,7 +3745,7 @@ class AttendanceController extends Controller
                                                          
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -3808,7 +3808,7 @@ class AttendanceController extends Controller
                                                                
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -3843,7 +3843,7 @@ class AttendanceController extends Controller
                                                                
                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3879,7 +3879,7 @@ class AttendanceController extends Controller
                                                                
                                                                  //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                  $time_in = Carbon::parse($data->night_shift_date);
-                                                                 $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                  $subtract = $time_in->diffInSeconds($holiday_date);
                                                                  $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -3915,7 +3915,7 @@ class AttendanceController extends Controller
                                                                 // dd('4');
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -3980,7 +3980,7 @@ class AttendanceController extends Controller
                                                                 // dd('6');
                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -4015,7 +4015,7 @@ class AttendanceController extends Controller
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                              
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4051,7 +4051,7 @@ class AttendanceController extends Controller
                                                                  //FOR THE RDSHND 
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4147,7 +4147,7 @@ class AttendanceController extends Controller
                                                                 
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -4174,7 +4174,7 @@ class AttendanceController extends Controller
 
                                                                     //Special Holiday
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4202,7 +4202,7 @@ class AttendanceController extends Controller
 
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4230,7 +4230,7 @@ class AttendanceController extends Controller
         
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -4258,7 +4258,7 @@ class AttendanceController extends Controller
                                                                     
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4441,7 +4441,7 @@ class AttendanceController extends Controller
                                             
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -4501,7 +4501,7 @@ class AttendanceController extends Controller
                                                            
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -4534,7 +4534,7 @@ class AttendanceController extends Controller
                                                                
                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4568,7 +4568,7 @@ class AttendanceController extends Controller
                                                              
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4594,14 +4594,14 @@ class AttendanceController extends Controller
                                                                     'msg' => 'Attendance Recorded Successfully',
                                         
                                                                 ]);
-
+ 
 
                                                             }
                                                             elseif($data->RDND == true && $holiday->holiday_type == 'Special'){
     
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -4659,7 +4659,7 @@ class AttendanceController extends Controller
                                             
                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
@@ -4693,7 +4693,7 @@ class AttendanceController extends Controller
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                              
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4728,7 +4728,7 @@ class AttendanceController extends Controller
                                                                  //FOR THE RDSHND 
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4768,7 +4768,7 @@ class AttendanceController extends Controller
                                                                    
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -4793,7 +4793,7 @@ class AttendanceController extends Controller
 
                                                                     //Special Holiday
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4819,7 +4819,7 @@ class AttendanceController extends Controller
 
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -4845,7 +4845,7 @@ class AttendanceController extends Controller
         
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -4870,7 +4870,7 @@ class AttendanceController extends Controller
                                                                     
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5025,7 +5025,7 @@ class AttendanceController extends Controller
                                                                    
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -5092,7 +5092,7 @@ class AttendanceController extends Controller
                                                                     // dd('3');
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -5127,7 +5127,7 @@ class AttendanceController extends Controller
                                                                    
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5163,7 +5163,7 @@ class AttendanceController extends Controller
                                                                      //  dd('ops');
                                                                      //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                      $time_in = Carbon::parse($data->night_shift_date);
-                                                                     $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                      $subtract = $time_in->diffInSeconds($holiday_date);
                                                                      $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5199,7 +5199,7 @@ class AttendanceController extends Controller
                                                                     // dd('4');
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -5262,7 +5262,7 @@ class AttendanceController extends Controller
                                                                     // dd('6');
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -5298,7 +5298,7 @@ class AttendanceController extends Controller
                                                                     //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                                  
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5333,7 +5333,7 @@ class AttendanceController extends Controller
                                                                      //FOR THE RDSHND 
                                                                     //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5429,7 +5429,7 @@ class AttendanceController extends Controller
                                                                     
                                                                         //REST DAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -5456,7 +5456,7 @@ class AttendanceController extends Controller
 
                                                                         //Special Holiday
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5484,7 +5484,7 @@ class AttendanceController extends Controller
 
                                                                         //REGULAR HOLIDAY YESTERDAY
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5512,7 +5512,7 @@ class AttendanceController extends Controller
             
                                                                         //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -5540,7 +5540,7 @@ class AttendanceController extends Controller
                                                                         
                                                                         //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5696,7 +5696,7 @@ class AttendanceController extends Controller
                                                                         // dd('1');
                                                                         //REST DAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -5760,7 +5760,7 @@ class AttendanceController extends Controller
                                                                         // dd('3');
                                                                         //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -5795,7 +5795,7 @@ class AttendanceController extends Controller
                                                                        
                                                                         //REGULAR HOLIDAY YESTERDAY
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5831,7 +5831,7 @@ class AttendanceController extends Controller
                                                                       //  dd('ops');
                                                                          //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                          $time_in = Carbon::parse($data->night_shift_date);
-                                                                         $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                          $subtract = $time_in->diffInSeconds($holiday_date);
                                                                          $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -5867,7 +5867,7 @@ class AttendanceController extends Controller
                                                                         // dd('4');
                                                                         //REST DAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -5930,7 +5930,7 @@ class AttendanceController extends Controller
                                                                         // dd('6');
                                                                         //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -5967,7 +5967,7 @@ class AttendanceController extends Controller
                                                                         //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                                      
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6006,7 +6006,7 @@ class AttendanceController extends Controller
                                                                          //FOR THE SHND 
                                                                         //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6101,7 +6101,7 @@ class AttendanceController extends Controller
                                                                         
                                                                             //REST DAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -6128,7 +6128,7 @@ class AttendanceController extends Controller
 
                                                                             //Special Holiday
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6156,7 +6156,7 @@ class AttendanceController extends Controller
 
                                                                             //REGULAR HOLIDAY YESTERDAY
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6184,7 +6184,7 @@ class AttendanceController extends Controller
                 
                                                                             //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -6212,7 +6212,7 @@ class AttendanceController extends Controller
                                                                             
                                                                             //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6378,7 +6378,7 @@ class AttendanceController extends Controller
                                                              
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -6441,7 +6441,7 @@ class AttendanceController extends Controller
                                                                    
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -6476,7 +6476,7 @@ class AttendanceController extends Controller
                                                                    
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6512,7 +6512,7 @@ class AttendanceController extends Controller
                                                                    
                                                                      //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                      $time_in = Carbon::parse($data->night_shift_date);
-                                                                     $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                      $subtract = $time_in->diffInSeconds($holiday_date);
                                                                      $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6548,7 +6548,7 @@ class AttendanceController extends Controller
                                                                     // dd('4');
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -6613,7 +6613,7 @@ class AttendanceController extends Controller
                                                                     // dd('6');
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -6650,7 +6650,7 @@ class AttendanceController extends Controller
                                                                     //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                                  
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6686,7 +6686,7 @@ class AttendanceController extends Controller
                                                                      //FOR THE RDSHND 
                                                                     //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                   $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6782,7 +6782,7 @@ class AttendanceController extends Controller
                                                                     
                                                                         //REST DAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -6809,7 +6809,7 @@ class AttendanceController extends Controller
 
                                                                         //Special Holiday
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6837,7 +6837,7 @@ class AttendanceController extends Controller
 
                                                                         //REGULAR HOLIDAY YESTERDAY
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -6865,7 +6865,7 @@ class AttendanceController extends Controller
             
                                                                         //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                             
@@ -6893,7 +6893,7 @@ class AttendanceController extends Controller
                                                                         
                                                                         //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                         $time_in = Carbon::parse($data->night_shift_date);
-                                                                        $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                       $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                         $subtract = $time_in->diffInSeconds($holiday_date);
                                                                         $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -7016,13 +7016,14 @@ class AttendanceController extends Controller
                                             
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
                                                                 //REGULAR HOLIDAY
                                                                 $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7077,13 +7078,14 @@ class AttendanceController extends Controller
                                                            
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
                                                                 //REGULAR HOLIDAY
                                                                 $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7110,13 +7112,14 @@ class AttendanceController extends Controller
                                                                
                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
                                                                 //Special Holiday nextday
                                                                 $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7145,13 +7148,14 @@ class AttendanceController extends Controller
                                                              
                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
                                                                  //Special Holiday nextday
                                                                 $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7178,13 +7182,14 @@ class AttendanceController extends Controller
     
                                                                 //REST DAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
                                                                 //SPECIAL HOLIDAY
                                                                 $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7236,13 +7241,14 @@ class AttendanceController extends Controller
                                             
                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                     
                                                                 //SPECIAL HOLIDAY
                                                                 $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7270,13 +7276,14 @@ class AttendanceController extends Controller
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                              
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
                                                                 //Regular HOLIDAY
                                                                 $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7305,13 +7312,14 @@ class AttendanceController extends Controller
                                                                  //FOR THE SHND 
                                                                 //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                 $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
                                                                 //Regular HOLIDAY
                                                                 $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7337,7 +7345,7 @@ class AttendanceController extends Controller
 
                                                                 //REGULAR HOLIDAY
                                                                 $out = Carbon::parse($data -> employee -> sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7362,7 +7370,7 @@ class AttendanceController extends Controller
 
                                                                 //SPECIAL HOLIDAY
                                                                 $out = Carbon::parse($data->employee->sched_end)->addDay(1)->subHour(1)->format('Y-m-d H:i:s');
-                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                 $timeout = Carbon::parse($out);
                                                                 $subtract = $timeout->diffInSeconds($start);
                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7391,16 +7399,18 @@ class AttendanceController extends Controller
                                                           
                                                             #need to use switch case
                                                             switch($data){
-                                                               
+                                                                
                                                                 //Rest day Night shift
                                                                 case $data -> RDND == true:
                                                                    
                                                                     //REST DAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    //$holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
-                                            
+                                                                    
+                                                                 
                                                                     Attendance::where('emp_no', '=', $request -> scanned)
                                                                             ->where('date', '=', Carbon::now('GMT+8')->subDays(1)->format('Y-m-d'))
                                                                             ->update(['time_out' => $data -> employee -> sched_end,
@@ -7423,7 +7433,8 @@ class AttendanceController extends Controller
 
                                                                     //Special Holiday
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    //$holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -7450,7 +7461,8 @@ class AttendanceController extends Controller
 
                                                                     //REGULAR HOLIDAY YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -7476,7 +7488,8 @@ class AttendanceController extends Controller
         
                                                                     //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                         
@@ -7500,7 +7513,8 @@ class AttendanceController extends Controller
                                                                     
                                                                     //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                     $time_in = Carbon::parse($data->night_shift_date);
-                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                    $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                     $subtract = $time_in->diffInSeconds($holiday_date);
                                                                     $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -7602,14 +7616,15 @@ class AttendanceController extends Controller
                                                                            
                                                                             //REST DAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            //$holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
                                                                             //REGULAR HOLIDAY
                                                                             // $out = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                             $out =  Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7670,13 +7685,14 @@ class AttendanceController extends Controller
                                                                             // dd('3');
                                                                             //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
                                                                             //REGULAR HOLIDAY
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7705,13 +7721,14 @@ class AttendanceController extends Controller
                                                                            
                                                                             //REGULAR HOLIDAY YESTERDAY
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
                                                                             //Special Holiday nextday
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7741,13 +7758,14 @@ class AttendanceController extends Controller
                                                                              //  dd('ops');
                                                                              //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                              $time_in = Carbon::parse($data->night_shift_date);
-                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                             //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                              $subtract = $time_in->diffInSeconds($holiday_date);
                                                                              $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
                                                                              //Special Holiday nextday
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7777,13 +7795,14 @@ class AttendanceController extends Controller
                                                                             // dd('4');
                                                                             //REST DAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
                                                                             //SPECIAL HOLIDAY
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7840,13 +7859,14 @@ class AttendanceController extends Controller
                                                                             // dd('6');
                                                                             //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           //$holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s'); 
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
                                                                             //SPECIAL HOLIDAY
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7876,13 +7896,14 @@ class AttendanceController extends Controller
                                                                             //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                                          
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
 
                                                                             //Regular HOLIDAY
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7915,14 +7936,15 @@ class AttendanceController extends Controller
                                                                              //FOR THE SHND 
                                                                             //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           //$holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s'); 
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
 
                                                                             //Regular HOLIDAY
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7949,7 +7971,7 @@ class AttendanceController extends Controller
 
                                                                             //REGULAR HOLIDAY
                                                                             $out =  Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
@@ -7976,7 +7998,7 @@ class AttendanceController extends Controller
 
                                                                             //SPECIAL HOLIDAY
                                                                             $out = Carbon::parse($data->employee->breaktime_start)->addDay(1)->format('Y-m-d H:i:s');
-                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 0)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $start = Carbon::now('GMT+8')->setTime(24, 00, 00)->subDay(1)->format('Y-m-d H:i:s');
                                                                             $timeout = Carbon::parse($out);
                                                                             $subtract = $timeout->diffInSeconds($start);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
@@ -8011,10 +8033,12 @@ class AttendanceController extends Controller
                                                                             
                                                                                 //REST DAY NIGHT SHIFT
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               //$holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');  
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
-                                                        
+                                                                                
+                                                                               
                                                                                 Attendance::where('emp_no', '=', $request -> scanned)
                                                                                         ->where('date', '=', Carbon::now('GMT+8')->subDay(1)->format('Y-m-d'))
                                                                                         ->update(['time_out' => Carbon::now('GMT+8')->format('H:i:s'),
@@ -8038,7 +8062,8 @@ class AttendanceController extends Controller
 
                                                                                 //Special Holiday
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8066,7 +8091,8 @@ class AttendanceController extends Controller
 
                                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8094,7 +8120,8 @@ class AttendanceController extends Controller
                     
                                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -8122,7 +8149,8 @@ class AttendanceController extends Controller
                                                                                 
                                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                //$holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8176,6 +8204,7 @@ class AttendanceController extends Controller
                                                                    
                                                                 }
 
+                                                              
 
                                                             }
                                                             //HOURS NOW IS GREATER THAN EMPLOYEE BREAKTIME  END
@@ -8225,7 +8254,7 @@ class AttendanceController extends Controller
                                                                             // dd('1');
                                                                             //REST DAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -8289,7 +8318,7 @@ class AttendanceController extends Controller
                                                                             // dd('3');
                                                                             //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -8324,7 +8353,7 @@ class AttendanceController extends Controller
                                                                            
                                                                             //REGULAR HOLIDAY YESTERDAY
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8360,7 +8389,7 @@ class AttendanceController extends Controller
                                                                           //  dd('ops');
                                                                              //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                              $time_in = Carbon::parse($data->night_shift_date);
-                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                              $subtract = $time_in->diffInSeconds($holiday_date);
                                                                              $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8396,7 +8425,7 @@ class AttendanceController extends Controller
                                                                             // dd('4');
                                                                             //REST DAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -8460,8 +8489,8 @@ class AttendanceController extends Controller
                                                                         elseif($data->RDSHND == true && $holiday->holiday_type == 'Special'){
                                                                             // dd('6');
                                                                             //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
-                                                                            $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                             $time_in = Carbon::parse($data->night_shift_date);
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -8498,7 +8527,7 @@ class AttendanceController extends Controller
                                                                             //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                                          
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8537,7 +8566,7 @@ class AttendanceController extends Controller
                                                                              //FOR THE SHND 
                                                                             //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8632,7 +8661,7 @@ class AttendanceController extends Controller
                                                                             
                                                                                 //REST DAY NIGHT SHIFT
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                         
@@ -8659,7 +8688,7 @@ class AttendanceController extends Controller
 
                                                                                 //Special Holiday
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8687,7 +8716,7 @@ class AttendanceController extends Controller
 
                                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8715,7 +8744,7 @@ class AttendanceController extends Controller
                     
                                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -8743,7 +8772,7 @@ class AttendanceController extends Controller
                                                                                 
                                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8843,7 +8872,7 @@ class AttendanceController extends Controller
                                                                      
                                                                             //REST DAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -8907,7 +8936,7 @@ class AttendanceController extends Controller
                                                                            
                                                                             //REST DAY REGULAR HOLIDAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -8942,7 +8971,7 @@ class AttendanceController extends Controller
                                                                            
                                                                             //REGULAR HOLIDAY YESTERDAY
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -8978,7 +9007,7 @@ class AttendanceController extends Controller
                                                                            
                                                                              //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                              $time_in = Carbon::parse($data->night_shift_date);
-                                                                             $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                              $subtract = $time_in->diffInSeconds($holiday_date);
                                                                              $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -9014,7 +9043,7 @@ class AttendanceController extends Controller
                                                                             // dd('4');
                                                                             //REST DAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -9077,7 +9106,7 @@ class AttendanceController extends Controller
                                                                             // dd('6');
                                                                             //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                 
@@ -9114,7 +9143,7 @@ class AttendanceController extends Controller
                                                                             //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again
                                                                          
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                           $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -9153,7 +9182,7 @@ class AttendanceController extends Controller
                                                                              //FOR THE SHND 
                                                                             //ADD the previous holiday which is Special holiday to todays holiday which Special holiday again   
                                                                             $time_in = Carbon::parse($data->night_shift_date);
-                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                            $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                             $subtract = $time_in->diffInSeconds($holiday_date);
                                                                             $restday_special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -9249,7 +9278,7 @@ class AttendanceController extends Controller
                                                                             
                                                                                 //REST DAY NIGHT SHIFT
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                         
@@ -9276,7 +9305,7 @@ class AttendanceController extends Controller
 
                                                                                 //Special Holiday
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $special_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -9304,7 +9333,7 @@ class AttendanceController extends Controller
 
                                                                                 //REGULAR HOLIDAY YESTERDAY
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $regular_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -9332,7 +9361,7 @@ class AttendanceController extends Controller
                     
                                                                                 //REST DAY SPECIAL HOLIDAY NIGHT SHIFT
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_special_total_holiday_hours = gmdate('H:i:s', $subtract);
                                                     
@@ -9360,7 +9389,7 @@ class AttendanceController extends Controller
                                                                                 
                                                                                 //REST DAY REGULAR HOLIDAY NIGHT SHIFT YESTERDAY
                                                                                 $time_in = Carbon::parse($data->night_shift_date);
-                                                                                $holiday_date = Carbon::now('GMT+8')->setTime(23, 59, 59)->subDay(1)->format('Y-m-d H:i:s');
+                                                                               $holiday_date = Carbon::now('GMT+8')->setTime(24, 00, 00)->addDay(1)->format('Y-m-d H:i:s');
                                                                                 $subtract = $time_in->diffInSeconds($holiday_date);
                                                                                 $restday_regular_total_holiday_hours = gmdate('H:i:s', $subtract);
 
@@ -11360,25 +11389,9 @@ class AttendanceController extends Controller
                                         if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
 
-                                            // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                            // $emp_sched = Carbon::parse($sched -> sched_start);
-                                            // $interval = $emp_sched->diffInSeconds($datetimetoday);
-                                            // $total = gmdate('H:i:s', $interval); //minus
 
-                                            // $time2 = Carbon::parse($total);
-                                            // $datetimenow = Carbon::now('GMT+8')->format('Y-m-d H:i:s'); //carbon now
-                                            // $convert = Carbon::parse($datetimenow);
-
-                                            // //add the subtrcated hour or minus to the current time and date
-                                            // $sum = $convert->add($time2->diffInHours('00:00:00'), 'hours')
-                                            //                 ->add($time2->diffInMinutes('00:00:00') % 60, 'minutes')
-                                            //                 ->add($time2->diffInSeconds('00:00:00') % 60, 'seconds');
-
-                                            // $sum->format('Y-m-d H:i:s');
-
-
-                                             $emp_sched = Carbon::parse($sched -> sched_start);
-                                             $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
+                                            $emp_sched = Carbon::parse($sched -> sched_start);
+                                            $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
 
                                             $employee_attendance = new Attendance();
                                             $employee_attendance -> emp_no = $request -> scanned;
@@ -11442,22 +11455,6 @@ class AttendanceController extends Controller
 
                                         if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
 
-
-                                                // $datetimetoday = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-                                                // $emp_sched = Carbon::parse($sched -> sched_start);
-                                                // $interval = $emp_sched->diffInSeconds($datetimetoday);
-                                                // $total = gmdate('H:i:s', $interval); //minus
-
-                                                // $time2 = Carbon::parse($total);
-                                                // $datetimenow = Carbon::now('GMT+8')->format('Y-m-d H:i:s'); //carbon now
-                                                // $convert = Carbon::parse($datetimenow);
-
-                                                // //add the subtrcated hour or minus to the current time and date
-                                                // $sum = $convert->add($time2->diffInHours('00:00:00'), 'hours')
-                                                //                 ->add($time2->diffInMinutes('00:00:00') % 60, 'minutes')
-                                                //                 ->add($time2->diffInSeconds('00:00:00') % 60, 'seconds');
-
-                                                // $sum->format('Y-m-d H:i:s');
                                                 $emp_sched = Carbon::parse($sched -> sched_start);
                                                 $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
 

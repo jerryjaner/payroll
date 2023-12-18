@@ -23,8 +23,18 @@ class TestController extends Controller
 
   public function test(){
 
-  
+    
+    $formatted_dt1=Carbon::parse('12/14/2023');
+    $formatted_dt2=Carbon::parse('12/16/2023');
+    // Excluded specific day in a week
+    $excluded_day = [Carbon::SUNDAY, Carbon::MONDAY]; 
 
+    // Add the dates, skipping the excluded day of the week
+    $date_diff = $formatted_dt1->diffInDaysFiltered(function(Carbon $date) use ($excluded_day) {
+    return !in_array($date->dayOfWeek, $excluded_day);
+    }, $formatted_dt2)+1;
+
+    dd($date_diff);
     // $user = Auth::user();
     
        // //FOR THE FIXED RATE

@@ -232,8 +232,8 @@ class AccountController extends Controller
             $user_password->password = Hash::make($request-> new_password);
             $user_password->update();
             return response()->json([
-            'status' => 200,
-            'msg' => 'Password Update Successfully',
+                'status' => 200,
+                'msg' => 'Password Update Successfully',
             ]);
         }
     }

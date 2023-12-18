@@ -58,6 +58,8 @@ class LeaveReqController extends Controller
             return !in_array($date->dayOfWeek, $excluded_day);
             }, $formatted_dt2)+1;
 
+            // dd($date_diff);
+
             LeaveReq::create([
                 'leave_day'         => $date_diff,
                 'user_id'           => Auth::user()->id,
@@ -72,6 +74,7 @@ class LeaveReqController extends Controller
                 'person1'           => $request->person1,
                 'person2'           => $request->person2,
             ]);
+
             return response()->json([
                 'code' => 200,
                 'msg' => 'Leave Request Added Successfully',
@@ -90,9 +93,9 @@ class LeaveReqController extends Controller
 
 	 		$output .= '<table class="leave-tbl table" style="width: 100%" id="all_leave">
             <thead>
-            <tr>
-                <th hidden> </th>
-            </tr>
+                <tr>
+                    <th hidden> </th>
+                </tr>
             </thead>
             <tbody>';
             foreach ($all_leave as $leave) {

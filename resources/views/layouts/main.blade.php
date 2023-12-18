@@ -8,12 +8,6 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        {{-- <!-- PWA -->
-        <meta name="theme-color" content="#6777ef"/>
-        <link rel="apple-touch-icon" href="{{ asset('logo.PNG') }}">
-        <link rel="manifest" href="{{ asset('/manifest.json') }}"> --}}
-
-
         <title>Theorem-MS</title>
 
         <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
@@ -239,7 +233,7 @@
 
                                         @elseif(Auth::user()->hasRole('SVPT'))
 
-                                           Senior Vice President For <br> &nbsp &nbsp Technology 
+                                           Senior Vice President of <br> &nbsp &nbsp Technology 
 
                                         @elseif(Auth::user()->hasRole('legal'))
 
@@ -342,7 +336,7 @@
 
                                         @elseif(Auth::user()->hasRole('SVPT'))
 
-                                            <p class="account-email">Senior Vice President For Technology</p>
+                                            <p class="account-email">Senior Vice President of Technology</p>
                                            
                                         @elseif(Auth::user()->hasRole('legal'))
 
@@ -544,14 +538,7 @@
             });
         </script>
 
-        {{-- <script src="{{ asset('/sw.js') }}"></script>
-        <script>
-            if (!navigator.serviceWorker.controller) {
-                navigator.serviceWorker.register("/sw.js").then(function (reg) {
-                    console.log("Service worker has been registered for scope: " + reg.scope);
-                });
-            }
-        </script> --}}
+        
 
         @yield('page-scripts')
 
