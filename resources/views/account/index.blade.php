@@ -28,10 +28,10 @@
                         @else
 
                         {{-- <i class='bx bx-user icon' id="profile-pic" style="border-radius: 100%; border: 0.5px solid gray;  padding: 1px; width:130px; height: 130px;"></i> --}}
-                        <img src="https://ui-avatars.com/api/?name={{Auth::user()->employee->employee_name}}&background=bc3d4f&color=fff" style="border-radius: 100%;  width:8rem; height: 8rem;">
+                        <img src="https://ui-avatars.com/api/?name={{Auth::user()->employee->employee_name}}&background=bc3d4f&color=ffffff" style="border-radius: 100%;  width:8rem; height: 8rem;">
 
                         @endif
-                        
+
                     </div>
 
                     <div class="text-center">
