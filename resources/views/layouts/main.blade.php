@@ -107,69 +107,71 @@
 
                         @if(Auth::user()->hasRole(['accounting','HR', 'assistantHR','CEO']))
 
-                        <li class="nav-link {{ request()->segment(1) == 'holiday' ? 'nav-active' : '' }}"
-                            data-tippy-content="Holiday" data-tippy-arrow="false">
-                            <a href="{{ route('holiday') }}">
-                                <i class='bx bx-calendar-check icon'></i>
-                                <span class="text nav-text">Holiday</span>  
-                            </a>
-                        </li>
+                            <li class="nav-link {{ request()->segment(1) == 'holiday' ? 'nav-active' : '' }}"
+                                data-tippy-content="Holiday" data-tippy-arrow="false">
+                                <a href="{{ route('holiday') }}">
+                                    <i class='bx bx-calendar-check icon'></i>
+                                    <span class="text nav-text">Holiday</span>  
+                                </a>
+                            </li>
 
-                        <li class="nav-link {{ request()->segment(1) == 'payroll' ? 'nav-active' : '' }}"
-                            data-tippy-content="Payroll" data-tippy-arrow="false">
-                            <a href="{{ route('payroll') }}">
-                                <i class='bx bx-money-withdraw icon'></i>
-                                <span class="text nav-text">Payroll</span>
-                            </a>
-                        </li>
+                            <li class="nav-link {{ request()->segment(1) == 'payroll' ? 'nav-active' : '' }}"
+                                data-tippy-content="Payroll" data-tippy-arrow="false">
+                                <a href="{{ route('payroll') }}">
+                                    <i class='bx bx-money-withdraw icon'></i>
+                                    <span class="text nav-text">Payroll</span>
+                                </a>
+                            </li>
 
-                        <li class="nav-link {{ request()->segment(1) == 'deduction' ? 'nav-active' : '' }}"
-                            data-tippy-content="Deduction" data-tippy-arrow="false">
-                            <a href="{{ route('deduction') }}">
-                                <i class='bx bx-money icon'></i>
-                                <span class="text nav-text">Deduction</span>
-                            </a>
-                        </li>
+                            <li class="nav-link {{ request()->segment(1) == 'deduction' ? 'nav-active' : '' }}"
+                                data-tippy-content="Deduction" data-tippy-arrow="false">
+                                <a href="{{ route('deduction') }}">
+                                    <i class='bx bx-money icon'></i>
+                                    <span class="text nav-text">Deduction</span>
+                                </a>
+                            </li>
 
                         @endif
 
                         @if(Auth::user()->hasRole(['CEO','administrator','HR','assistantHR']))
 
-                        <li class="nav-link {{ request()->segment(1) == 'employees' ? 'nav-active' : '' }}"
-                            data-tippy-content="Employees" data-tippy-arrow="false">
-                            <a href="{{ route('employees') }}">
-                                <i class='bx bx-group icon'></i>
-                                <span class="text nav-text">Employees</span>
-                            </a>
-                        </li>
+                            <li class="nav-link {{ request()->segment(1) == 'employees' ? 'nav-active' : '' }}"
+                                data-tippy-content="Employees" data-tippy-arrow="false">
+                                <a href="{{ route('employees') }}">
+                                    <i class='bx bx-group icon'></i>
+                                    <span class="text nav-text">Employees</span>
+                                </a>
+                            </li>
 
                         @endif
 
+                        @if(Auth::user()->hasRole(['CEO','administrator','HR','assistantHR','employee','manager','COO','VPO', 'CEO', 'SVPT', 'legal','teamleader']))
+                       
+                            <li class="nav-link {{ request()->segment(1) == 'leave-request' ? 'nav-active' : '' }}"
+                                data-tippy-content="Request Leave" data-tippy-arrow="false">
+                                <a href="{{ route('leaveRequest') }}">
+                                    <i class='bx bx-file icon'></i>
+                                    <span class="text nav-text">Request Leave</span>
+                                </a>
+                            </li>
 
-                        <li class="nav-link {{ request()->segment(1) == 'leave-request' ? 'nav-active' : '' }}"
-                            data-tippy-content="Request Leave" data-tippy-arrow="false">
-                            <a href="{{ route('leaveRequest') }}">
-                                <i class='bx bx-file icon'></i>
-                                <span class="text nav-text">Request Leave</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-link {{ request()->segment(1) == 'overtime-request' ? 'nav-active' : '' }}"
-                            data-tippy-content="Request Overtime" data-tippy-arrow="false">
-                            <a href="{{ route('overtimeRequest') }}">
-                                <i class='bx bx-file-blank icon'></i>
-                                <span class="text nav-text">Request Overtime</span>
-                            </a>
-                        </li>
+                            <li class="nav-link {{ request()->segment(1) == 'overtime-request' ? 'nav-active' : '' }}"
+                                data-tippy-content="Request Overtime" data-tippy-arrow="false">
+                                <a href="{{ route('overtimeRequest') }}">
+                                    <i class='bx bx-file-blank icon'></i>
+                                    <span class="text nav-text">Request Overtime</span>
+                                </a>
+                            </li>
+                        @endif
 
                         @if(Auth::user()->hasRole(['CEO','HR','assistantHR']))
-                        <li class="nav-link {{ request()->segment(1) == 'users' ? 'nav-active' : '' }}"
-                            data-tippy-content="Users" data-tippy-arrow="false">
-                            <a href="{{ route('users') }}">
-                                <i class='bx bx-user-circle icon'></i>
-                                <span class="text nav-text">Users</span>
-                            </a>
-                        </li>
+                            <li class="nav-link {{ request()->segment(1) == 'users' ? 'nav-active' : '' }}"
+                                data-tippy-content="Users" data-tippy-arrow="false">
+                                <a href="{{ route('users') }}">
+                                    <i class='bx bx-user-circle icon'></i>
+                                    <span class="text nav-text">Users</span>
+                                </a>
+                            </li>
                         @endif
 
                     </ul>
@@ -182,10 +184,10 @@
                             <a href="{{ route('account') }}">
                                 @if(Auth::user()->profile_image != null)
 
-                                <img src="{{asset('storage/user/images/'. Auth::user()->profile_image)}}" style="border-radius: 100%; border: 0.5px solid gray;  padding: 1px; width:35px; height: 35px; margin-left: 12px;">
+                                    <img src="{{asset('storage/user/images/'. Auth::user()->profile_image)}}" style="border-radius: 100%; border: 0.5px solid gray;  padding: 1px; width:35px; height: 35px; margin-left: 12px;">
                                 @else
 
-                                <i class='bx bx-user icon' id="profile-pic"></i>
+                                     <i class='bx bx-user icon' id="profile-pic"></i>
 
                                 @endif
 
