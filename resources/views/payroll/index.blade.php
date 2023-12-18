@@ -138,6 +138,7 @@
                                             <span class="text-danger error-text allowance_error"></span>
                                         </div>
                                     </div>
+                                  
                                 
                                     <div class="form-row row">
                                         <div class="col-xl-6">
@@ -149,6 +150,18 @@
                                             <label for="txt-time">End Date:</label>
                                             <input type="date" name="end_date" class="form-control">
                                             <span class="text-danger error-text end_date_error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-row row">
+                                        <div class="col-xl-6">
+                                            <label for="txt-time">No. Days of LWP:</label>
+                                            <input type="number" min="0" step="any" name="lwp" class="form-control" >
+                                            <span class="text-danger error-text lwp_error"></span>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label for="txt-time">No. Days of Suspended:</label>
+                                            <input type="number" min="0" step="any" name="suspended" class="form-control" id="employee_allowances">
+                                            <span class="text-danger error-text suspended_error"></span>
                                         </div>
                                     </div>
                                     <div class="form-row row">
@@ -720,6 +733,14 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="container">
+                        <div class="col-12">
+                            <div class="row-sm-auto">
+                                <small>13 Month :<span id="13_month" class="text1" style="margin-left: 10px;"></span></small>
+                            </div>
+                        </div>
+                     
                     </div>
 
                     <div class="mt-4 gap-2 d-flex justify-content-end">
@@ -1646,8 +1667,16 @@
                     
                     var overtime_total = over_all_sum_in_ot.toFixed(2); //Round OFF
 
-                  
-                  
+                    //Absent LWP SUSPENDED
+                    //var total_A_LWP_S =  parseFloat(response.employee_absent) + parseFloat(response.leave_without_pay) + parseFloat(reponse.suspended);
+
+                     var suspended =  parseFloat(response.suspended);
+                     var lwp =  parseFloat(response.leave_without_pay);
+                     var absent =  parseFloat(response.employee_absent);
+
+                     var total_absent_leave_without_pay_suspended =  parseFloat(suspended) + parseFloat(lwp) + parseFloat(absent);
+                   
+
                     $("#payslip_id").val(response.id);
                     $("#memos").html( `${response.memos}`);
                     $("#from").html( `${from}`);
@@ -1673,11 +1702,12 @@
                     $("#employee_base_salary").html( `${response.employee_base_salary}`);
                     $("#employee_cash_advance").html( `${response.cash_advance}`);
                     $("#night_differential").html( `${response.night_diff}`);
-                    $("#absent").html( `${response.employee_absent}`);
+                    $("#absent").html( `${total_absent_leave_without_pay_suspended}`);
                     $("#gross").html( `${response.gross}`);
                     $("#employee_restday").html( `${response.restday}`);
                     // $("#employee_reg_spe").html( `${total}`);
                     $("#employee_reg_spe").html( `${response.total_holiday}`);
+                    $("#13_month").html( `${response.thirteen_month}`);
 
 
                 }
@@ -1689,4 +1719,3 @@
 
 @endsection
 @endsection
-

@@ -50,6 +50,10 @@ class Payroll extends Model
         'restday_special_holiday_overtime',
         'restday_regular_holiday_overtime',
         'total_overtime',
+        'suspended',
+        'leave_without_pay',
+        'voluntary_time_off',
+        'thirteen_month',
 
         
         

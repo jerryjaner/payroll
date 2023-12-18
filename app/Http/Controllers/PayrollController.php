@@ -453,6 +453,10 @@ class PayrollController extends Controller
                     $payroll -> cash_advance = $request -> cash_advance;
                     $payroll -> employee_base_salary = $request -> base_salary / 2;
                     $payroll -> night_diff = 0.00;
+
+                    $payroll -> leave_without_pay = $request->lwp * $request -> daily_rate;
+                    $payroll -> suspended = $request->suspended * $request -> daily_rate;
+
                     $payroll -> late_undertime = 0.00;
                     $payroll -> total_overtime = 0.00;
                     $payroll -> sss_deduction = 0.00;
@@ -463,10 +467,16 @@ class PayrollController extends Controller
                     $payroll -> add_adjustment = $request -> add_adjustment;
                     $payroll -> deduct_adjustment = $request -> deduct_adjustment;
                     $payroll -> gov_contribution = 0.00;
-                    $payroll -> total_deduction = 0.00   +  $payroll -> cash_advance +  $payroll -> deduct_adjustment;
+                    $payroll -> total_deduction = 0.00   +  $payroll -> cash_advance +  $payroll -> deduct_adjustment +  $payroll -> leave_without_pay +  $payroll -> suspended;
                     $payroll -> gross =  $payroll -> employee_base_salary +   $payroll -> allowance +  $payroll -> add_adjustment;
                   //  $payroll -> net_pay =  ($payroll -> employee_base_salary  +   $payroll -> allowance) - $payroll -> total_deduction; 
                     $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                    
+                    //For the 13 month
+                    //wala pa yung VTO 
+                    $a_lwp_s = ($payroll -> late_undertime + $payroll -> employee_absent + $payroll -> leave_without_pay + $payroll -> suspended);
+                    $computation = $payroll -> employee_base_salary - $a_lwp_s;
+                    $payroll-> thirteen_month = $computation / 12;  
 
                     $payroll -> save();
 
@@ -558,6 +568,10 @@ class PayrollController extends Controller
                     $payroll -> night_diff = 0.00;
                     $payroll -> employee_absent = $absent * $request -> daily_rate;
                     $payroll -> allowance = $total_allowance;
+
+                    $payroll -> leave_without_pay = $request->lwp * $request -> daily_rate;
+                    $payroll -> suspended = $request->suspended * $request -> daily_rate;
+
                     $payroll -> undertime_total =  $computed_undertime;
                     $payroll -> late_total = $computed_late;
                     $payroll -> late_undertime = $computed_late + $computed_undertime;
@@ -583,7 +597,13 @@ class PayrollController extends Controller
                                          $payroll -> special_holiday_overtime +  $payroll -> regular_holiday_overtime + 
                                          $payroll -> restday_special_holiday_overtime + $payroll -> restday_regular_holiday_overtime   + 
                                          $payroll -> add_adjustment;
-                                      
+                    //For the 13 month
+                    //wala pa yung VTO 
+                    $a_lwp_s = ($payroll -> late_total + $payroll -> undertime_total + $payroll -> employee_absent + $payroll -> leave_without_pay + $payroll -> suspended);
+                    $computation = $payroll -> employee_base_salary - $a_lwp_s;
+                    $payroll-> thirteen_month = $computation / 12;  
+                    
+                    
                    
                     // SSS Deduction
                     if($sss_deduction -> isNotEmpty()){
@@ -638,7 +658,9 @@ class PayrollController extends Controller
 
                                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment;
+                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment 
+                                                              + $payroll -> leave_without_pay +  $payroll -> suspended;
+
                                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
                                 $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                                 break; // Exit the loop after the first deduction that matches
@@ -648,7 +670,9 @@ class PayrollController extends Controller
 
                                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment;
+                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment
+                                                               + $payroll -> leave_without_pay +  $payroll -> suspended;
+
                                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
                                 $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                                 break; // Exit the loop after the first deduction that matches
@@ -660,7 +684,8 @@ class PayrollController extends Controller
                     else{
 
                          $payroll -> pag_ibig_deduction = 0.00;
-                         $payroll -> total_deduction =   $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment;
+                         $payroll -> total_deduction =   $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent +  $payroll -> deduct_adjustment 
+                                                        + $payroll -> leave_without_pay +  $payroll -> suspended;
                          $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
                          $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                     }
@@ -693,6 +718,10 @@ class PayrollController extends Controller
                     $payroll -> cash_advance = $request -> cash_advance;
                     $payroll -> employee_base_salary = $request -> base_salary / 2;
                     $payroll -> night_diff = 0.00;
+
+                    $payroll -> leave_without_pay = $request->lwp * $request -> daily_rate;
+                    $payroll -> suspended = $request->suspended * $request -> daily_rate;
+
                     $payroll -> late_undertime = 0.00;
                     $payroll -> total_overtime = 0.00;
                     $payroll -> sss_deduction = 0.00;
@@ -702,9 +731,16 @@ class PayrollController extends Controller
                     $payroll -> add_adjustment = $request -> add_adjustment;
                     $payroll -> deduct_adjustment = $request -> deduct_adjustment;
                     $payroll -> restday = 0.00;
-                    $payroll -> total_deduction = 0.00 + $payroll -> cash_advance +  $payroll -> deduct_adjustment;
+                    $payroll -> total_deduction = 0.00 + $payroll -> cash_advance +  $payroll -> deduct_adjustment + $payroll -> leave_without_pay + $payroll -> suspended;
                     $payroll -> gross =  $payroll -> employee_base_salary +   $payroll -> allowance + $payroll -> add_adjustment;
                     $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
+                    
+                    //For the 13 month
+                    //wala pa yung VTO 
+                    $a_lwp_s = ($payroll -> late_undertime + $payroll -> employee_absent + $payroll -> leave_without_pay + $payroll -> suspended);
+                    $computation = $payroll -> employee_base_salary - $a_lwp_s;
+                    $payroll-> thirteen_month = $computation / 12;  
+
                     $payroll -> save();
 
                     return response()->json([
@@ -801,11 +837,19 @@ class PayrollController extends Controller
                     $payroll -> cash_advance = $request -> cash_advance;
                     $payroll -> employee_base_salary = $request -> base_salary / 2;
                     $payroll -> night_diff = $ten_percent_night_differential;
+
                     $payroll -> employee_absent = $absent * $request -> daily_rate;
                     $payroll -> allowance = $total_allowance;
+
+                    
+                    $payroll -> leave_without_pay = $request->lwp * $request -> daily_rate;
+                    $payroll -> suspended = $request->suspended * $request -> daily_rate;
+
                     $payroll -> undertime_total =  $computed_undertime;
                     $payroll -> late_total = $computed_late;
                     $payroll -> late_undertime = $computed_late + $computed_undertime;
+
+
                     $payroll -> restday = $restday_salary;
                     $payroll -> special_holiday = $SH_salary;
                     $payroll -> regular_holiday = $RH_salary;
@@ -825,6 +869,15 @@ class PayrollController extends Controller
                     $payroll -> gross =  $payroll -> employee_base_salary +  $payroll -> allowance + $payroll -> night_diff +  $payroll -> total_overtime +  $payroll -> restday  + $SH_salary + $RH_salary + $RDRH_salary + $RDSH_salary + 
                                          $payroll -> overtime +  $payroll -> restday_overtime +  $payroll -> special_holiday_overtime +  $payroll -> regular_holiday_overtime +  $payroll -> restday_special_holiday_overtime + $payroll -> restday_regular_holiday_overtime 
                                          + $payroll -> add_adjustment;
+
+                    //For the 13 month
+                    //wala pa yung VTO 
+                      $a_lwp_s = ($payroll -> late_total + $payroll -> undertime_total + $payroll -> employee_absent + $payroll -> leave_without_pay + $payroll -> suspended);
+                    
+                      $computation = $payroll -> employee_base_salary - $a_lwp_s;
+
+                      $payroll-> thirteen_month = $computation / 12; 
+
                    
                  
                     if($sss_deduction -> isNotEmpty()){
@@ -878,7 +931,9 @@ class PayrollController extends Controller
 
                                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment;
+                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment
+                                                               + $payroll -> leave_without_pay +  $payroll -> suspended;
+
                                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
                                 $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                                 break; // Exit the loop after the first deduction that matches
@@ -888,7 +943,9 @@ class PayrollController extends Controller
 
                                 $payroll -> pag_ibig_deduction =  $pagibig_deduct -> employees_share / 2;
 
-                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment;
+                                $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment
+                                                               + $payroll -> leave_without_pay + $payroll -> suspended;
+
                                 $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
                                 $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                                 break; // Exit the loop after the first deduction that matches
@@ -901,7 +958,9 @@ class PayrollController extends Controller
 
                          $payroll -> pag_ibig_deduction = 0.00;
 
-                         $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment;
+                         $payroll -> total_deduction =  $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction + $payroll -> late_undertime + $payroll -> cash_advance + $payroll -> employee_absent + $payroll -> deduct_adjustment 
+                                                        + $payroll -> leave_without_pay + $payroll -> suspended;
+
                          $payroll -> gov_contribution = $payroll -> philhealth_deduction + $payroll -> sss_deduction +  $payroll -> pag_ibig_deduction;
                          $payroll -> net_pay = $payroll -> gross - $payroll -> total_deduction;
                     }

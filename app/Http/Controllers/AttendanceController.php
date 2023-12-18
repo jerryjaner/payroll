@@ -10261,6 +10261,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                                                 $employee_attendance -> RDRHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10285,6 +10286,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> late_hours = $total_late;
                                                                 $employee_attendance -> RDRHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10300,7 +10302,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> RDRHND = true;
-
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10321,13 +10323,13 @@ class AttendanceController extends Controller
                                                                     $emp_sched = Carbon::parse($sched -> sched_start);
                                                                     $nightshift_date_less_than_sched_start = Carbon::now('GMT+8')->format('Y-m-d') . ' ' . $emp_sched->format('H:i:s');
                                                                     
-
                                                                     $employee_attendance = new Attendance();
                                                                     $employee_attendance -> emp_no = $request -> scanned;
                                                                     $employee_attendance -> time_in = $sched -> sched_start;
                                                                     $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                     $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                                                     $employee_attendance -> RHND = true;
+                                                                    $employee_attendance -> status = 'present';
                                                                     $employee_attendance -> save();
                                                                     return response()->json([
 
@@ -10351,6 +10353,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> late_hours = $total_late;
                                                                 $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10366,6 +10369,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> RHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10415,6 +10419,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                                                 $employee_attendance -> RDSHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
 
@@ -10440,6 +10445,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> late_hours = $total_late;
                                                                 $employee_attendance -> RDSHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10455,7 +10461,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> RDSHND = true;
-
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10519,6 +10525,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> late_hours = $total_late;
                                                                 $employee_attendance -> SHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10534,6 +10541,7 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                                 $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                                 $employee_attendance -> SHND = true;
+                                                                $employee_attendance -> status = 'present';
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
@@ -10563,6 +10571,7 @@ class AttendanceController extends Controller
                                                         $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                         $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                                         $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> status = 'present';
                                                         $employee_attendance -> save();
 
                                                         return response()->json([
@@ -10586,6 +10595,7 @@ class AttendanceController extends Controller
                                                         $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                         $employee_attendance -> late_hours = $total_late;
                                                             $employee_attendance -> RDND = true;
+                                                            $employee_attendance -> status = 'present';
                                                         $employee_attendance -> save();
 
                                                         return response()->json([
@@ -10601,6 +10611,7 @@ class AttendanceController extends Controller
                                                         $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                         $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                         $employee_attendance -> RDND = true;
+                                                        $employee_attendance -> status = 'present';
                                                         $employee_attendance -> save();
 
                                                         return response()->json([
@@ -10626,6 +10637,7 @@ class AttendanceController extends Controller
                                                         $employee_attendance -> time_in = $sched -> sched_start;
                                                         $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                         $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
+                                                        $employee_attendance -> status = 'present';
                                                         $employee_attendance -> save();
 
                                                         return response()->json([
@@ -10648,6 +10660,7 @@ class AttendanceController extends Controller
                                                         $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                         $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                                         $employee_attendance -> late_hours = $total_late;
+                                                        $employee_attendance -> status = 'present';
                                                         $employee_attendance -> save();
 
                                                         return response()->json([
@@ -10662,7 +10675,7 @@ class AttendanceController extends Controller
                                                         $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
                                                         $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                         $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-
+                                                        $employee_attendance -> status = 'present';
                                                         $employee_attendance -> save();
 
                                                         return response()->json([
@@ -11260,6 +11273,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                             $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                             $employee_attendance -> RDRHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11284,6 +11298,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> late_hours = $total_late;
                                             $employee_attendance -> RDRHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11299,7 +11314,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> RDRHND = true;
-
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11326,6 +11341,7 @@ class AttendanceController extends Controller
                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                                 $employee_attendance -> RHND = true;
+                                                $employee_attendance -> status = 'present';
                                                 $employee_attendance -> save();
 
                                                 return response()->json([
@@ -11350,6 +11366,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> late_hours = $total_late;
                                             $employee_attendance -> RHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11365,6 +11382,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> RHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11399,6 +11417,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                             $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                             $employee_attendance -> RDSHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
 
@@ -11424,6 +11443,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> late_hours = $total_late;
                                             $employee_attendance -> RDSHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11439,8 +11459,8 @@ class AttendanceController extends Controller
                                             $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> RDSHND = true;
-
-                                            $employee_attendance -> save();
+                                            $employee_attendance -> status = 'present';
+                                            $employee_attendance -> save(); 
 
                                             return response()->json([
 
@@ -11465,6 +11485,7 @@ class AttendanceController extends Controller
                                                 $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                                 $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                                 $employee_attendance -> SHND = true;
+                                                $employee_attendance -> status = 'present';
                                                 $employee_attendance -> save();
 
                                                 return response()->json([
@@ -11488,6 +11509,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> late_hours = $total_late;
                                             $employee_attendance -> SHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11503,6 +11525,7 @@ class AttendanceController extends Controller
                                             $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                             $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                             $employee_attendance -> SHND = true;
+                                            $employee_attendance -> status = 'present';
                                             $employee_attendance -> save();
 
                                             return response()->json([
@@ -11533,6 +11556,7 @@ class AttendanceController extends Controller
                                     $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                     $employee_attendance -> night_shift_date = $nightshift_date_less_than_sched_start;
                                     $employee_attendance -> RDND = true;
+                                    $employee_attendance -> status = 'present';
                                     $employee_attendance -> save();
 
                                     return response()->json([
@@ -11556,6 +11580,7 @@ class AttendanceController extends Controller
                                     $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                     $employee_attendance -> late_hours = $total_late;
                                      $employee_attendance -> RDND = true;
+                                     $employee_attendance -> status = 'present';
                                     $employee_attendance -> save();
 
                                     return response()->json([
@@ -11571,6 +11596,7 @@ class AttendanceController extends Controller
                                     $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                     $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                     $employee_attendance -> RDND = true;
+                                    $employee_attendance -> status = 'present';
                                     $employee_attendance -> save();
 
                                     return response()->json([
@@ -11602,7 +11628,7 @@ class AttendanceController extends Controller
 
                                     //    $employee_attendance -> RDND = true;
                                     // }
-
+                                    $employee_attendance -> status = 'present';
                                     $employee_attendance -> save();
 
 
@@ -11628,7 +11654,7 @@ class AttendanceController extends Controller
                                     $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                     $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
                                     $employee_attendance -> late_hours = $total_late;
-
+                                    $employee_attendance -> status = 'present';
                                     // if(Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
                                     //    $employee_attendance -> RDND = true;
@@ -11648,7 +11674,7 @@ class AttendanceController extends Controller
                                     $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
                                     $employee_attendance -> date = Carbon::now('GMT+8')->format('Y-m-d');
                                     $employee_attendance -> night_shift_date = Carbon::now('GMT+8')->format('Y-m-d H:i:s');
-
+                                    $employee_attendance -> status = 'present';
                                     $employee_attendance -> save();
 
                                     return response()->json([
