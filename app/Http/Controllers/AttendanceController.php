@@ -10345,7 +10345,6 @@ class AttendanceController extends Controller
                                                                 $interval = $sched_in->diffInSeconds($timein);
                                                                 $total_late = gmdate('H:i:s', $interval);
 
-
                                                                 $employee_attendance = new Attendance();
                                                                 $employee_attendance -> emp_no = $request -> scanned;
                                                                 $employee_attendance -> time_in = Carbon::now('GMT+8')->format('H:i:s');
