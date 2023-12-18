@@ -10386,7 +10386,6 @@ class AttendanceController extends Controller
                                                     else if ($currentDate === $holidayDate && $holiday->holiday_type === 'Special') {
 
                                                         # dd("regular special niyan");
-
                                                         if( Carbon::now('GMT+8')->isSaturday() || Carbon::now('GMT+8')->isSunday()){
 
                                                             if($request -> scanned == $sched -> employee_no && Carbon::now('GMT+8')->format('H:i') < $sched -> sched_start){
