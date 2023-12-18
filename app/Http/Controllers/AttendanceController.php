@@ -10372,7 +10372,6 @@ class AttendanceController extends Controller
                                                                 $employee_attendance -> save();
 
                                                                 return response()->json([
-
                                                                     'status' => 200,
                                                                     'msg' => 'Attendance Recorded Successfully',
                                                                 ]);
