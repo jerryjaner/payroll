@@ -55,8 +55,10 @@ class AttendanceController extends Controller
     public function today_attendance(){
         
          $attendance_todays = Attendance::whereDate('created_at', Carbon::today())
-                                        ->where('absent', false)
-                                        ->where('status', '=', null)
+                                        //->where('absent', false)
+                                        ->where('status', '=', 'present')
+                                        ->orwhere('status', '=', 'onleave')
+                                        ->orwhere('status', '=', 'leave_without_pay')
                                         ->with('employee')
                                         ->get(['id','time_in','time_out','emp_no','date','created_at','updated_at']);
 
@@ -242,6 +244,11 @@ class AttendanceController extends Controller
                                                         $output .=  '<h5 class="time">00:00</h5>';
                                                         $output .= '<p class="type">Time In</p>';
                                                     }
+                                                    else if($all_attendance -> status == "leave_without_pay"){
+
+                                                        $output .=  '<h5 class="time">00:00</h5>';
+                                                        $output .= '<p class="type">Time out</p>';
+                                                    }
                                                     else{
                                                         $output .=  '<h5 class="time">'.date('h:i A', strtotime($all_attendance->time_in)).'</h5>';
                                                         $output .= '<p class="type">Time In</p>';
@@ -256,6 +263,11 @@ class AttendanceController extends Controller
                                                         $output .= '<p class="type">Time out</p>';
                                                     }
                                                     else if($all_attendance -> status == "onleave"){
+
+                                                        $output .=  '<h5 class="time">00:00</h5>';
+                                                        $output .= '<p class="type">Time out</p>';
+                                                    }
+                                                    else if($all_attendance -> status == "leave_without_pay"){
 
                                                         $output .=  '<h5 class="time">00:00</h5>';
                                                         $output .= '<p class="type">Time out</p>';
@@ -292,6 +304,14 @@ class AttendanceController extends Controller
                                                                             <i class="bx bx-alarm-off"></i>
                                                                                Absent
                                                                          </span>';
+
+                                                        }
+                                                        elseif($all_attendance -> status == "leave_without_pay"){
+
+                                                            $output .=' <span class="status bg-warning d-flex align-items-center text-center">
+                                                                            <i class="bx bx-calendar-check"></i>
+                                                                                LWP
+                                                                        </span>';
                                                         }
                                                         else{
 
@@ -334,24 +354,22 @@ class AttendanceController extends Controller
     public function first_scanned(){
 
         $scanned = Attendance::whereDate('created_at', Carbon::today())
-                            ->where('status', '=', null)
+                             ->where('status', '=', null)
                              ->with('employee')
                              ->latest('updated_at')->first();
 
         $data = '';
 		if ($scanned->count() > 0) {
 
-            $data .= '<div class="d-flex align-items-center" id="first_employee">';
+              $data .= '<div class="d-flex align-items-center" id="first_employee">';
                             if($scanned -> employee -> image != null){
 
                                 $data .=  '<img src="storage/employee/images/' . $scanned -> employee -> image . '" style="border-radius: 100%; border: 0.5px solid gray;  padding: 1px; width:50px; height: 50px;">';
-
                             }
                             else{
 
                                 $data .= '<i class="bx bx-user icon profile-picture-time"> </i>';
                             }
-
 
                  $data .= '<div class="ms-3">
                                 <h5 class="emp-name">'.$scanned -> employee -> employee_name.'</h5>
@@ -11773,15 +11791,23 @@ class AttendanceController extends Controller
 
             $employee_absent_onleave = new Attendance();
 
-            if($request -> RH === '1'){
+            // if($request -> RH === '1'){
 
-                 $employee_absent_onleave -> RH = $request -> RH;
+            //      $employee_absent_onleave -> RH = $request -> RH;
 
+            // }
+            // else if($request -> SH === '0'){
+
+            //      $employee_absent_onleave -> SH = $request -> SH;
+
+            // }
+            if($request->holiday_type == '0'){
+
+                $employee_absent_onleave -> RH = '1';
             }
-            else if($request -> SH === '0'){
+            elseif($request->holiday_type == '1'){
 
-                 $employee_absent_onleave -> SH = $request -> SH;
-
+                $employee_absent_onleave -> SH = '1';
             }
             else{
 
@@ -11790,7 +11816,6 @@ class AttendanceController extends Controller
                 $employee_absent_onleave -> date = Carbon::now('GMT+8')->format('Y-m-d');
                 $employee_absent_onleave -> save();
 
-              //  dd($employee_absent_onleave);
                 return response()->json([
 
                     'status' => 200,
@@ -11815,7 +11840,7 @@ class AttendanceController extends Controller
 
     public function absent_onleave_attendance(){
         
-        $absent_onleave_data = Attendance::with('employee')->where('status', 'absent')->orWhere('status', 'onleave')->get();
+        $absent_onleave_data = Attendance::with('employee')->where('status', 'absent')->orWhere('status', 'onleave')->orWhere('status', 'leave_without_pay')->get();
         
         $output = '';
 
@@ -11862,7 +11887,14 @@ class AttendanceController extends Controller
                                         <p class="emp-no"> Date</p>
                                     </div>
                                     <div class="col-xl-2 td-div">';
-                                        $output .=  '<h5 class="time">'.$data->status.'</h5>';
+                                        if($data->status == 'leave_without_pay'){
+                                            
+                                            $output .=  '<h5 class="time">LWP</h5>';
+                                        }
+                                        else{
+                                            $output .=  '<h5 class="time">'.$data->status.'</h5>';
+                                        }
+                                       
                                         $output .= '<p class="type">Status</p>
                                        </div>
                                    </div>

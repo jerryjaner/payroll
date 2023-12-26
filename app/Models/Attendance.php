@@ -23,6 +23,7 @@ class Attendance extends Model
         'undertime_hours',
         'status',
         'absent',
+        'leave_without_pay',
         'onleave',
         'night_diff_hours',
         'RD',

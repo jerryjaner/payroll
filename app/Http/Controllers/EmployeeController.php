@@ -355,6 +355,7 @@ class EmployeeController extends Controller
 		    ]);
         }
 	}
+    
     //handle delete an employee ajax request
 	public function delete(Request $request) {
 		$id = $request->id;

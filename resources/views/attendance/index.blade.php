@@ -345,18 +345,26 @@
                                                 <div class="col-xl-12">
                                                     <label for="txt-time">Status:</label><br>
                                                     <input type="radio"  name="status" value="absent"> Absent <br>
-                                                    <input type="radio" name="status" value="onleave"> Onleave
+                                                    <input type="radio" name="status" value="onleave"> Onleave <br>
+                                                    <input type="radio" name="status" value="leave_without_pay"> Leave Without Pay
                                                 </div>
                                                 <span class="text-danger error-text status_error"></span>
                                             </div>
 
-                                             <div class="form-row row">
+                                            {{-- <div class="form-row row">
                                                 <div class="col-xl-12">
                                                     <label for="txt-time">Status:</label><br>
                                                     <input type="radio"  name="RH"  value="1"> Regular Holiday <br>
-                                                    <input type="radio"  name="SH" value="0"> Special Holiday
-                                                </div>
-                                                
+                                                    <input type="radio"  name="SH"  value="0"> Special Holiday
+                                                </div> 
+                                            </div> --}}
+
+                                            <div class="form-row row">
+                                                <div class="col-xl-12">
+                                                    <label for="txt-time">Status:</label><br>
+                                                    <input type="radio"  name="holiday_type"  value="0"> Regular Holiday <br>
+                                                    <input type="radio"  name="holiday_type"  value="1"> Special Holiday
+                                                </div> 
                                             </div>
                                         
                                             <div class="form-row first-row">
@@ -364,7 +372,6 @@
                                                     <button type="submit" class="btn-form d-flex align-items-center" id="submit_absent_onleave">
                                                         Submit
                                                     </button>
-                        
                                                 </div>
                                             </div>
                                         </form>
@@ -426,7 +433,7 @@
     @section('page-scripts')
 
         <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js" rel="nofollow"></script>
-     
+        
         <script>
 
              document.addEventListener('DOMContentLoaded', function() {

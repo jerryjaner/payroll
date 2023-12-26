@@ -59,19 +59,19 @@ class UserSeeder extends Seeder
 
         
         $user = User::create([
-            'name' => 'Jerry Janer ',
-            'username' => 'TH_user',
+            'name' => 'Anne Condes ',
+            'username' => 'TH_AnneCondes',
             'department' => 'IT',
             'position' => 'Human Resources',
             'role' => 'HR',
             'email' => 'user@gmail.com',
-            'password' => Hash::make('TH_user')
+            'password' => Hash::make('TH_AnneCondes')
         ]);
                 
         $user->attachRole('HR');
         
         Employee::create([
-            'employee_name' => 'Jerry Janer ',
+            'employee_name' => 'Anne Condes ',
             'base_salary' => 15000.00,
             'employee_no' => 'EMP_001',
             'daily_rate' => 681.82,

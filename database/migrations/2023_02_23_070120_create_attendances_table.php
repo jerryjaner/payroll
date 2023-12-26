@@ -23,7 +23,7 @@ return new class extends Migration
             $table->time('undertime_hours')->nullable();
             $table->string('status')->nullable();
             $table->boolean('absent')->default(false);
-            // $table->boolean('restday')->default(false);
+            $table->boolean('leave_without_pay')->default(false);
             $table->boolean('onleave')->default(false);
             $table->boolean('RD')->nullable()->default(false);
             $table->boolean('RDSH')->nullable()->default(false);
